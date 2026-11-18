@@ -56,59 +56,8 @@ mod ml;
 mod gl;
 
 pub const LANGS: &[(&str, &str)] = &[
-    ("en", "English"),
-    ("it", "Italiano"),
-    ("fr", "Français"),
-    ("de", "Deutsch"),
-    ("nl", "Nederlands"),
-    ("nb", "Norsk bokmål"),
-    ("zh-cn", "简体中文"),
-    ("zh-tw", "繁體中文"),
-    ("pt-pt", "Português (Portugal)"),
     ("pt-br", "Português (Brasil)"),
-    ("es", "Español"),
-    ("et", "Eesti keel"),
-    ("eu", "Euskara"),
-    ("hu", "Magyar"),
-    ("bg", "Български"),
-    ("be", "Беларуская"),
-    ("ru", "Русский"),
-    ("sk", "Slovenčina"),
-    ("id", "Indonesia"),
-    ("cs", "Čeština"),
-    ("da", "Dansk"),
-    ("eo", "Esperanto"),
-    ("tr", "Türkçe"),
-    ("vi", "Tiếng Việt"),
-    ("pl", "Polski"),
-    ("ja", "日本語"),
-    ("ko", "한국어"),
-    ("kz", "Қазақ"),
-    ("uk", "Українська"),
-    ("ur", "اردو"),
-    ("fa", "فارسی"),
-    ("ca", "Català"),
-    ("gl", "Galego"),
-    ("el", "Ελληνικά"),
-    ("sv", "Svenska"),
-    ("sq", "Shqip"),
-    ("sr", "Srpski"),
-    ("th", "ภาษาไทย"),
-    ("sl", "Slovenščina"),
-    ("ro", "Română"),
-    ("lt", "Lietuvių"),
-    ("lv", "Latviešu"),
-    ("ar", "العربية"),
-    ("he", "עברית"),
-    ("hr", "Hrvatski"),
-    ("sc", "Sardu"),
-    ("ta", "தமிழ்"),
-    ("ge", "ქართული"),
-    ("fi", "Suomi"),
-    ("ml", "മലയാളം"),
-    ("hi", "हिंदी"),
-    ("gu", "ગુજરાતી"),
-    ("az", "Azərbaycan dili"),
+    ("en", "English"),
 ];
 
 pub(crate) fn cjk_ui_unavailable() -> bool {
@@ -198,12 +147,13 @@ pub fn translate(name: String) -> String {
 }
 
 pub fn translate_locale(name: String, locale: &str) -> String {
-    let lang = resolve_lang(
-        &hbb_common::config::LocalConfig::get_option("lang"),
-        locale,
-        cjk_ui_unavailable(),
-    );
-    let m = match lang.as_str() {
+    let _ = locale;
+    let lang = if hbb_common::config::LocalConfig::get_option("lang").eq_ignore_ascii_case("en") {
+        "en"
+    } else {
+        "pt-br"
+    };
+    let m = match lang {
         "fr" => fr::T.deref(),
         "zh-cn" => cn::T.deref(),
         "it" => it::T.deref(),

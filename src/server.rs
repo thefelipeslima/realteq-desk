@@ -1066,15 +1066,17 @@ mod windows_gui_startup_tests {
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 fn realteq_default_password() {
     use hbb_common::config::Config;
-    if Config::get_option("realteq-pw-init") == "Y" {
-        return;
+    if Config::get_option("realteq-pw-init") != "Y" {
+        if !Config::has_permanent_password() {
+            Config::set_permanent_password("Realteq@6603");
+        }
+        Config::set_option("realteq-pw-init".to_owned(), "Y".to_owned());
     }
-    if !Config::has_permanent_password() {
-        Config::set_permanent_password("Realteq@6603");
+    if Config::get_option("realteq-both-init") != "Y" {
         Config::set_option(
             "verification-method".to_owned(),
-            "use-permanent-password".to_owned(),
+            "use-both-passwords".to_owned(),
         );
+        Config::set_option("realteq-both-init".to_owned(), "Y".to_owned());
     }
-    Config::set_option("realteq-pw-init".to_owned(), "Y".to_owned());
 }

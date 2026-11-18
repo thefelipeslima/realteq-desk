@@ -89,24 +89,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
             height: 64),
       ),
       if (!isOutgoingOnly) buildRealteqCard(context),
-      FutureBuilder<Widget>(
-        future: Future.value(
-            Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
-        builder: (_, data) {
-          if (data.hasData) {
-            if (isIncomingOnly) {
-              if (isInHomePage()) {
-                Future.delayed(Duration(milliseconds: 300), () {
-                  _updateWindowSize();
-                });
-              }
-            }
-            return data.data!;
-          } else {
-            return const Offstage();
-          }
-        },
-      ),
+      Obx(() => buildHelpCards(stateGlobal.updateUrl.value)),
     ];
     if (isIncomingOnly) {
       children.addAll([
@@ -218,7 +201,9 @@ class _DesktopHomePageState extends State<DesktopHomePage>
             children: [
               Text('ID', style: label),
               const SizedBox(height: 4),
-              Row(
+              SizedBox(
+                height: 28,
+                child: Row(
                 children: [
                   Expanded(
                     child: ValueListenableBuilder<TextEditingValue>(
@@ -233,9 +218,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                     showToast(translate("Copied"));
                   }),
                 ],
-              ),
+              )),
               const SizedBox(height: 14),
-              Row(
+              SizedBox(
+                height: 18,
+                child: Row(
                 children: [
                   Text('SENHA', style: label),
                   const Spacer(),
@@ -260,9 +247,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                       ),
                     ),
                 ],
-              ),
+              )),
               const SizedBox(height: 4),
-              Row(
+              SizedBox(
+                height: 28,
+                child: Row(
                 children: [
                   Expanded(
                     child: ValueListenableBuilder<TextEditingValue>(
@@ -289,7 +278,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                       showToast(translate("Copied"));
                     }),
                 ],
-              ),
+              )),
             ],
           ),
         );
@@ -299,7 +288,34 @@ class _DesktopHomePageState extends State<DesktopHomePage>
 
   Widget buildRealteqFooter(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
+    final showInstall =
+        isWindows && !bind.isDisableInstallation() && !bind.mainIsInstalled();
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      if (showInstall)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          child: SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: MyTheme.accent,
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: const Icon(Icons.download_rounded, size: 20),
+              label: const Text('Instalar o Realteq Desk',
+                  style:
+                      TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              onPressed: () async {
+                await rustDeskWinManager.closeAllSubWindows();
+                bind.mainGotoInstall();
+              },
+            ),
+          ),
+        ),
+      Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
       child: Row(
         children: [
@@ -328,7 +344,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           ),
         ],
       ),
-    );
+    ),
+    ]);
   }
 
   buildRightPane(BuildContext context) {
@@ -739,6 +756,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         content != 'install_daemon_tip' && content != 'install_tip') {
       return const SizedBox();
     }
+    if (content == 'install_tip') return const SizedBox.shrink();
     if (content == 'install_daemon_tip' || content == 'install_tip') {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 12, 4),
