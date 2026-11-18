@@ -88,9 +88,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 : 'assets/realteq-logo.png',
             height: 64),
       ),
-      buildTip(context),
-      if (!isOutgoingOnly) buildIDBoard(context),
-      if (!isOutgoingOnly) buildPasswordBoard(context),
+      if (!isOutgoingOnly) buildRealteqCard(context),
       FutureBuilder<Widget>(
         future: Future.value(
             Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
@@ -128,7 +126,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     return ChangeNotifierProvider.value(
       value: gFFI.serverModel,
       child: Container(
-        width: isIncomingOnly ? 280.0 : 200.0,
+        width: isIncomingOnly ? 280.0 : 236.0,
         color: Theme.of(context).colorScheme.background,
         child: Stack(
           children: [
@@ -141,7 +139,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                     children: children,
                   ),
                 ),
-                Expanded(child: Container())
+                Expanded(child: Container()),
+                buildRealteqFooter(context),
               ],
             ),
             if (isOutgoingOnly)
@@ -173,6 +172,76 @@ class _DesktopHomePageState extends State<DesktopHomePage>
               )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildRealteqCard(BuildContext context) {
+    final model = gFFI.serverModel;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+            color: Theme.of(context).extension<ColorThemeExtension>()?.border ??
+                Colors.transparent),
+      ),
+      child: Column(
+        children: [
+          buildIDBoard(context),
+          buildPasswordBoard(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: model.serverId.text));
+                  showToast(translate("Copied"));
+                },
+                child: const Text('Copiar ID'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Clipboard.setData(
+                      ClipboardData(text: model.serverPasswd.text));
+                  showToast(translate("Copied"));
+                },
+                child: const Text('Copiar senha'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildRealteqFooter(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
+      child: Row(
+        children: [
+          FutureBuilder<String>(
+            future: bind.mainGetVersion(),
+            builder: (_, snap) => Text(
+              snap.hasData ? 'v${snap.data}' : '',
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).textTheme.bodySmall?.color
+                      ?.withOpacity(0.6)),
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            tooltip: dark ? 'Tema claro' : 'Tema escuro',
+            icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                size: 20),
+            onPressed: () => MyTheme.changeDarkMode(
+                dark ? ThemeMode.light : ThemeMode.dark),
+          ),
+        ],
       ),
     );
   }
