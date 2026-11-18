@@ -80,14 +80,13 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     final isOutgoingOnly = bind.isOutgoingOnly();
     final children = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
-      if (bind.isCustomClient())
-        Align(
-          alignment: Alignment.center,
-          child: loadPowered(context),
-        ),
       Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 4),
-        child: Image.asset('assets/realteq-logo.png', height: 64),
+        child: Image.asset(
+            Theme.of(context).brightness == Brightness.dark
+                ? 'assets/realteq-logo-dark.png'
+                : 'assets/realteq-logo.png',
+            height: 64),
       ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
@@ -612,8 +611,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [
-                  Color.fromARGB(255, 226, 66, 188),
-                  Color.fromARGB(255, 244, 114, 124),
+                  Color(0xFF4A3D12),
+                  Color(0xFF3D3320),
                 ],
               )),
               padding: EdgeInsets.all(20),
