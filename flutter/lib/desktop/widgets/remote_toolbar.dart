@@ -325,10 +325,37 @@ class ToolbarState {
 }
 
 class _ToolbarTheme {
-  static const Color blueColor = MyTheme.button;
-  static const Color hoverBlueColor = MyTheme.accent;
-  static Color inactiveColor = Colors.grey[800]!;
-  static Color hoverInactiveColor = Colors.grey[850]!;
+  static const Color blueColor = Color(0x00000000);
+  static const Color hoverBlueColor = Color(0x33FFFFFF);
+  static Color inactiveColor = const Color(0x1AFFFFFF);
+  static Color hoverInactiveColor = const Color(0x33FFFFFF);
+  static const Color barColor = Color(0xFF26231D);
+  static const Map<String, String> labels = {
+    'Select Monitor': 'Monitor',
+    'Control Actions': 'Controle',
+    'Display Settings': 'Exibição',
+    'Keyboard Settings': 'Teclado',
+    'Chat': 'Chat',
+    'Text chat': 'Chat',
+    'Voice call': 'Voz',
+    'Close': 'Encerrar',
+  };
+  static double labelWidth(String tooltip) {
+    final l = labels[tooltip];
+    return l == null ? 0 : 10.0 + l.length * 6.6;
+  }
+
+  static Widget? labelWidget(String tooltip) {
+    final l = labels[tooltip];
+    if (l == null) return null;
+    return Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Text(l,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500)));
+  }
 
   static const Color redColor = Colors.redAccent;
   static const Color hoverRedColor = Colors.red;
@@ -339,7 +366,7 @@ class _ToolbarTheme {
   static const double buttonSize = 32;
   static const double buttonHMargin = 2;
   static const double buttonVMargin = 6;
-  static const double iconRadius = 8;
+  static const double iconRadius = 10;
   static const double elevation = 3;
 
   static double dividerSpaceToAction = isWindows ? 8 : 14;
@@ -852,7 +879,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
     }
     // recording hidden
     toolbarItems.add(_CloseMenu(id: widget.id, ffi: widget.ffi));
-    final toolbarBorderRadius = BorderRadius.all(Radius.circular(4.0));
+    final toolbarBorderRadius = BorderRadius.all(Radius.circular(14.0));
     // innerAxis: how the toolbar icons themselves flow.
     // outerAxis: how the toolbar block and the handle stack against each other
     // (perpendicular to the dock edge, so the handle hangs off the interior face).
@@ -865,11 +892,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
       elevation: _ToolbarTheme.elevation,
       shadowColor: MyTheme.color(context).shadow,
       borderRadius: toolbarBorderRadius,
-      color: Theme.of(context)
-          .menuBarTheme
-          .style
-          ?.backgroundColor
-          ?.resolve(MaterialState.values.toSet()),
+      color: _ToolbarTheme.barColor,
       child: SingleChildScrollView(
         scrollDirection: innerAxis,
         child: Theme(
@@ -3065,7 +3088,8 @@ class _IconMenuButtonState extends State<_IconMenuButton> {
           height: _ToolbarTheme.buttonSize,
         );
     var button = SizedBox(
-      width: widget.width ?? _ToolbarTheme.buttonSize,
+      width: (widget.width ?? _ToolbarTheme.buttonSize) +
+          _ToolbarTheme.labelWidth(widget.tooltip),
       height: _ToolbarTheme.buttonSize,
       child: MenuItemButton(
           style: ButtonStyle(
@@ -3086,7 +3110,7 @@ class _IconMenuButtonState extends State<_IconMenuButton> {
                           BorderRadius.circular(_ToolbarTheme.iconRadius),
                       color: hover ? widget.hoverColor : widget.color,
                     ),
-                    child: icon)),
+                    child: _withLabel(icon, widget.tooltip))),
           )),
     ).marginSymmetric(
         horizontal: widget.hMargin ?? _ToolbarTheme.buttonHMargin,
@@ -3150,7 +3174,8 @@ class _IconSubmenuButtonState extends State<_IconSubmenuButton> {
           height: _ToolbarTheme.buttonSize,
         );
     final button = SizedBox(
-        width: widget.width ?? _ToolbarTheme.buttonSize,
+        width: (widget.width ?? _ToolbarTheme.buttonSize) +
+            _ToolbarTheme.labelWidth(widget.tooltip),
         height: _ToolbarTheme.buttonSize,
         child: SubmenuButton(
             menuStyle:
@@ -3169,7 +3194,7 @@ class _IconSubmenuButtonState extends State<_IconSubmenuButton> {
                               BorderRadius.circular(_ToolbarTheme.iconRadius),
                           color: hover ? widget.hoverColor : widget.color,
                         ),
-                        child: icon))),
+                        child: _withLabel(icon, widget.tooltip)))),
             menuChildren: widget
                 .menuChildrenGetter(this)
                 .map((e) => _buildPointerTrackWidget(e, widget.ffi))
@@ -3656,11 +3681,7 @@ class _DraggableShowHideState extends State<_DraggableShowHide> {
       data: TextButtonThemeData(style: buttonStyle),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .menuBarTheme
-              .style
-              ?.backgroundColor
-              ?.resolve(MaterialState.values.toSet()),
+          color: _ToolbarTheme.barColor,
           border: Border.all(
             color: _ToolbarTheme.borderColor(context),
             width: 1,
@@ -3818,4 +3839,13 @@ class _MinimizedMonitorSwitchButton extends StatelessWidget {
       );
     });
   }
+}
+
+Widget _withLabel(Widget icon, String tooltip) {
+  final label = _ToolbarTheme.labelWidget(tooltip);
+  if (label == null) return icon;
+  return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [icon, label]);
 }
