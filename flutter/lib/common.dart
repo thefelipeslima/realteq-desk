@@ -458,7 +458,7 @@ class MyTheme {
     listTileTheme: listTileTheme,
     menuBarTheme: MenuBarThemeData(
         style:
-            MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.white))),
+            MenuStyle(backgroundColor: MaterialStatePropertyAll(Color(0xFFF8F0E3)))),
     colorScheme: ColorScheme.light(
         primary: accent, secondary: accent, background: grayBg),
     popupMenuTheme: PopupMenuThemeData(
