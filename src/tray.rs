@@ -75,10 +75,11 @@ fn make_tray() -> hbb_common::ResultType<()> {
         None
     };
     let open_i = MenuItem::new(translate("Open".to_owned()), true, None);
+    let exit_i = MenuItem::new("Sair".to_owned(), true, None);
     if let Some(quit_i) = &quit_i {
-        tray_menu.append_items(&[&open_i, quit_i]).ok();
+        tray_menu.append_items(&[&open_i, &exit_i, quit_i]).ok();
     } else {
-        tray_menu.append_items(&[&open_i]).ok();
+        tray_menu.append_items(&[&open_i, &exit_i]).ok();
     }
     let tooltip = |count: usize| {
         if count == 0 {
@@ -188,6 +189,19 @@ fn make_tray() -> hbb_common::ResultType<()> {
         }
 
         if let Ok(event) = menu_channel.try_recv() {
+            if event.id == exit_i.id() {
+                #[cfg(windows)]
+                {
+                    let _ = _tray_icon
+                        .lock()
+                        .unwrap()
+                        .as_mut()
+                        .map(|t| t.set_visible(false));
+                    exit_ui_keep_service();
+                }
+                *control_flow = ControlFlow::Exit;
+                return;
+            }
             if let Some(quit_i) = &quit_i {
                 if event.id == quit_i.id() {
                     /* failed in windows, seems no permission to check system process
@@ -315,4 +329,25 @@ fn load_icon_from_asset() -> Option<image::DynamicImage> {
         }
     }
     None
+}
+
+#[cfg(windows)]
+fn exit_ui_keep_service() {
+    use std::os::windows::process::CommandExt;
+    let exe = std::env::current_exe()
+        .ok()
+        .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
+        .unwrap_or_default();
+    if exe.is_empty() {
+        return;
+    }
+    let script = format!(
+        "Get-CimInstance Win32_Process -Filter \"Name='{}'\" | Where-Object {{ $_.ProcessId -ne {} -and $_.CommandLine -notmatch '--service' -and $_.CommandLine -notmatch '--server' }} | ForEach-Object {{ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }}",
+        exe,
+        std::process::id()
+    );
+    allow_err!(std::process::Command::new("powershell")
+        .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command", &script])
+        .creation_flags(0x08000000)
+        .spawn());
 }
