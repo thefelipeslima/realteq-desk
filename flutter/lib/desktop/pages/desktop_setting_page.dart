@@ -270,7 +270,7 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
   bool _rtWrong = false;
 
   void _rtTryUnlock() {
-    final ok = _rtPwController.text == utf8.decode(base64.decode('cnQ2NjAz'));
+    final ok = _rtPwController.text.toLowerCase() == utf8.decode(base64.decode('cnQ2NjAz'));
     setState(() {
       _rtUnlocked = ok;
       _rtWrong = !ok;
