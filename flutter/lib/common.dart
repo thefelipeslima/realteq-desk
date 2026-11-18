@@ -3194,6 +3194,12 @@ Future<void> start_service(bool is_start) async {
 }
 
 Future<bool> canBeBlocked() async {
+  // Realteq: the technician must be able to use this app's windows during a
+  // remote session; settings are protected by a password instead.
+  return false;
+}
+
+Future<bool> _originalCanBeBlocked() async {
   if (isWeb) {
     // Web can only act as a controller, never as a controlled side,
     // so it should never be blocked by a remote session.

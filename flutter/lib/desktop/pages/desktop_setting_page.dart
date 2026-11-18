@@ -265,9 +265,59 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
     });
   }
 
+  bool _rtUnlocked = false;
+  final _rtPwController = TextEditingController();
+  bool _rtWrong = false;
+
+  void _rtTryUnlock() {
+    final ok = _rtPwController.text == utf8.decode(base64.decode('cnQ2NjAz'));
+    setState(() {
+      _rtUnlocked = ok;
+      _rtWrong = !ok;
+    });
+  }
+
+  Widget _rtLockScreen(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Center(
+        child: SizedBox(
+          width: 320,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Icon(Icons.lock_outline_rounded, size: 36, color: _accentColor),
+            const SizedBox(height: 12),
+            const Text('Configurações protegidas',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 4),
+            const Text('Digite a senha para acessar as configurações.',
+                style: TextStyle(fontSize: 12), textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _rtPwController,
+              obscureText: true,
+              autofocus: true,
+              onSubmitted: (_) => _rtTryUnlock(),
+              decoration: InputDecoration(
+                hintText: 'Senha',
+                errorText: _rtWrong ? 'Senha incorreta' : null,
+              ),
+            ),
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                  onPressed: _rtTryUnlock, child: const Text('Entrar')),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    if (!_rtUnlocked) return _rtLockScreen(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: _buildBlock(
