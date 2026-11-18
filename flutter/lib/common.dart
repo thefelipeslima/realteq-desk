@@ -372,6 +372,7 @@ class MyTheme {
   static ThemeData lightTheme = ThemeData(
     // https://stackoverflow.com/questions/77537315/after-upgrading-to-flutter-3-16-the-app-bar-background-color-button-size-and
     useMaterial3: false,
+    fontFamily: 'Segoe UI',
     brightness: Brightness.light,
     hoverColor: Color.fromARGB(255, 221, 206, 181),
     scaffoldBackgroundColor: Color(0xFFEFE4D2),
@@ -401,12 +402,17 @@ class MyTheme {
           )
         : null,
     textTheme: const TextTheme(
-        titleLarge: TextStyle(fontSize: 19, color: Color(0xFF1F1A12)),
-        titleSmall: TextStyle(fontSize: 14, color: Color(0xFF1F1A12)),
-        bodySmall: TextStyle(fontSize: 12, color: Color(0xFF1F1A12), height: 1.25),
+        titleLarge: TextStyle(
+            fontSize: 15, fontWeight: FontWeight.w500, color: Color(0xFF1F1A12)),
+        titleSmall: TextStyle(fontSize: 13, color: Color(0xFF1F1A12)),
+        bodySmall:
+            TextStyle(fontSize: 11, color: Color(0xFF1F1A12), height: 1.25),
         bodyMedium:
-            TextStyle(fontSize: 14, color: Color(0xFF1F1A12), height: 1.25),
-        labelLarge: TextStyle(fontSize: 16.0, color: MyTheme.accent80)),
+            TextStyle(fontSize: 12, color: Color(0xFF1F1A12), height: 1.25),
+        labelLarge: TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w500,
+            color: MyTheme.accent80)),
     cardColor: grayBg,
     hintColor: Color(0xFFAAAAAA),
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -440,6 +446,7 @@ class MyTheme {
       style: OutlinedButton.styleFrom(
         backgroundColor: grayBg,
         foregroundColor: Color(0xFF1F1A12),
+        side: BorderSide(color: Color(0xFFD5C5AA), width: 0.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -471,6 +478,7 @@ class MyTheme {
   );
   static ThemeData darkTheme = ThemeData(
     useMaterial3: false,
+    fontFamily: 'Segoe UI',
     brightness: Brightness.dark,
     hoverColor: Color.fromARGB(255, 61, 61, 66),
     scaffoldBackgroundColor: Color(0xFF222225),
@@ -500,13 +508,13 @@ class MyTheme {
           )
         : null,
     textTheme: const TextTheme(
-      titleLarge: TextStyle(fontSize: 19),
-      titleSmall: TextStyle(fontSize: 14),
-      bodySmall: TextStyle(fontSize: 12, height: 1.25),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.25),
+      titleLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+      titleSmall: TextStyle(fontSize: 13),
+      bodySmall: TextStyle(fontSize: 11, height: 1.25),
+      bodyMedium: TextStyle(fontSize: 12, height: 1.25),
       labelLarge: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.bold,
+        fontSize: 12.0,
+        fontWeight: FontWeight.w500,
         color: accent80,
       ),
     ),

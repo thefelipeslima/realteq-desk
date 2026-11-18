@@ -376,14 +376,14 @@ class _ConnectionPageState extends State<ConnectionPage>
   Widget _buildRemoteIDTextField(BuildContext context) {
     var w = Container(
       width: 320 + 20 * 2,
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(13)),
           border: Border.all(color: Theme.of(context).colorScheme.background)),
       child: Ink(
         child: Column(
           children: [
-            getConnectionPageTitle(context, false).marginOnly(bottom: 15),
+            getConnectionPageTitle(context, false).marginOnly(bottom: 10),
             Row(
               children: [
                 Expanded(
@@ -451,9 +451,9 @@ class _ConnectionPageState extends State<ConnectionPage>
                           keyboardType: TextInputType.visiblePassword,
                           focusNode: fieldFocusNode,
                           style: const TextStyle(
-                            fontFamily: 'WorkSans',
-                            fontSize: 22,
-                            height: 1.4,
+                            fontFamily: 'Segoe UI',
+                            fontSize: 15,
+                            height: 1.3,
                           ),
                           maxLines: 1,
                           cursorColor:
@@ -465,7 +465,7 @@ class _ConnectionPageState extends State<ConnectionPage>
                                   ? null
                                   : translate('Enter Remote ID'),
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 13)),
+                                  horizontal: 12, vertical: 10)),
                           controller: fieldTextEditingController,
                           inputFormatters: [IDTextInputFormatter()],
                           onChanged: (v) {

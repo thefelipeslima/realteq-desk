@@ -235,6 +235,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           ),
           const Spacer(),
           IconButton(
+            tooltip: 'Configurações',
+            icon: const Icon(Icons.settings_outlined, size: 20),
+            onPressed: DesktopTabPage.onAddSetting,
+          ),
+          IconButton(
             tooltip: dark ? 'Tema claro' : 'Tema escuro',
             icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
                 size: 20),
@@ -288,7 +293,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                   ?.color
                                   ?.withOpacity(0.5)),
                         ).marginOnly(top: 5),
-                        buildPopupMenu(context)
+                        const SizedBox()
                       ],
                     ),
                   ),
@@ -651,38 +656,29 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       bool? closeButton,
       String? closeOption}) {
     if (bind.mainGetBuildinOption(key: kOptionHideHelpCards) == 'Y' &&
-        content != 'install_daemon_tip') {
+        content != 'install_daemon_tip' && content != 'install_tip') {
       return const SizedBox();
     }
-    if (content == 'install_daemon_tip') {
+    if (content == 'install_daemon_tip' || content == 'install_tip') {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 12, 4),
-        child: Tooltip(
-          message: 'Instalar no sistema (necessário para o UAC)',
-          child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            onTap: onPressed,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 9,
-                    height: 9,
-                    decoration: const BoxDecoration(
-                        color: MyTheme.accent, shape: BoxShape.circle),
-                  ),
-                  const SizedBox(width: 6),
-                  Text('Instalar no sistema',
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.color
-                              ?.withOpacity(0.75))),
-                ],
+        padding: const EdgeInsets.fromLTRB(16, 0, 12, 4),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Tooltip(
+            message: 'Instalar no sistema (necessário para o UAC)',
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: onPressed,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: MyTheme.accent, width: 1.5),
+                ),
+                child: const Text('Instalar',
+                    style: TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.w500)),
               ),
             ),
           ),
