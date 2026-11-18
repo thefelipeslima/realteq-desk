@@ -950,7 +950,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
         shape: MaterialStatePropertyAll(BeveledRectangleBorder()),
       ).copyWith(
               backgroundColor:
-                  Theme.of(context).menuBarTheme.style?.backgroundColor)),
+                  MaterialStatePropertyAll(_ToolbarTheme.barColor))),
     );
   }
 }
@@ -1182,7 +1182,7 @@ class _MonitorMenu extends StatelessWidget {
           Widget? monitorsIcon;
           if (isAllMonitors) {
             monitorsIcon = globalMonitorsWidget(
-                width, Colors.white, _ToolbarTheme.blueColor);
+                width, Colors.white, Color(0xFF6B6558));
           }
           return _IconMenuButton(
             tooltip: isMulti
@@ -3809,7 +3809,7 @@ class _MinimizedMonitorSwitchButton extends StatelessWidget {
             padding: MaterialStateProperty.all(EdgeInsets.zero),
             backgroundColor: MaterialStateProperty.resolveWith((states) {
               if (states.contains(MaterialState.hovered)) {
-                return _ToolbarTheme.blueColor.withOpacity(0.15);
+                return Colors.white.withOpacity(0.15);
               }
               return null;
             }),
@@ -3820,7 +3820,7 @@ class _MinimizedMonitorSwitchButton extends StatelessWidget {
               SvgPicture.asset(
                 'assets/display_switcher.svg',
                 colorFilter:
-                    ColorFilter.mode(_ToolbarTheme.blueColor, BlendMode.srcIn),
+                    ColorFilter.mode(Color(0xFFE6A800), BlendMode.srcIn),
                 width: iconSize,
                 height: iconSize,
               ),
