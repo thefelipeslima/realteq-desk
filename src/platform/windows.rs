@@ -2322,7 +2322,7 @@ fn get_shortcut_icon_location(install_dir: &str, exe: &str) -> String {
 
     get_custom_icon(install_dir, exe)
         .map(|p| format!("oLink.IconLocation = \"{}\"", p))
-        .unwrap_or_default()
+        .unwrap_or_else(|| format!("oLink.IconLocation = \"{},0\"", exe))
 }
 
 pub fn create_shortcut(id: &str) -> ResultType<()> {
