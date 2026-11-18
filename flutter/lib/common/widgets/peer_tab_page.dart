@@ -166,13 +166,33 @@ class _PeerTabPageState extends State<PeerTabPage>
                     message: model.tabTooltip(t),
                     onTriggered: isMobile ? mobileShowTabVisibilityMenu : null,
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        decoration: (hover.value
-                            ? (selected ? decoBorder : deco)
-                            : (selected ? decoBorder : null)),
-                        child: Icon(model.tabIcon(t), color: color)
-                            .paddingSymmetric(horizontal: 4),
-                      ).paddingSymmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? MyTheme.accent
+                              : (hover.value ? Theme.of(context).hoverColor : null),
+                          border: Border.all(
+                              color: selected
+                                  ? MyTheme.accent
+                                  : Theme.of(context).dividerColor),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 5),
+                        child: Text(model.tabTooltip(t),
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: selected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                color: selected
+                                    ? Color(0xFF17130A)
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color)),
+                      ).paddingSymmetric(horizontal: 3),
                       onTap: isOptionFixed(kOptionPeerTabIndex)
                           ? null
                           : () async {
