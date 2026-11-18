@@ -384,6 +384,8 @@ class _ToolbarTheme {
       MyTheme.color(context).divider;
 
   static MenuStyle defaultMenuStyle(BuildContext context) => MenuStyle(
+        backgroundColor: MaterialStatePropertyAll(barColor),
+        surfaceTintColor: const MaterialStatePropertyAll(Colors.transparent),
         side: MaterialStateProperty.all(BorderSide(
           width: 1,
           color: borderColor(context),
@@ -931,6 +933,14 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
       menuButtonTheme: MenuButtonThemeData(
         style: ButtonStyle(
           minimumSize: MaterialStatePropertyAll(Size(64, 32)),
+          foregroundColor: MaterialStateProperty.resolveWith((s) =>
+              s.contains(MaterialState.disabled)
+                  ? Colors.white38
+                  : Colors.white),
+          iconColor: MaterialStateProperty.resolveWith((s) =>
+              s.contains(MaterialState.disabled)
+                  ? Colors.white38
+                  : Colors.white),
           textStyle: MaterialStatePropertyAll(
             TextStyle(fontWeight: FontWeight.normal),
           ),
@@ -943,6 +953,25 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
         space: _ToolbarTheme.dividerSpaceToAction,
         color: _ToolbarTheme.dividerColor(context),
       ),
+      menuTheme: MenuThemeData(
+          style: MenuStyle(
+              backgroundColor: MaterialStatePropertyAll(_ToolbarTheme.barColor),
+              surfaceTintColor:
+                  const MaterialStatePropertyAll(Colors.transparent))),
+      checkboxTheme: CheckboxThemeData(
+          side: const BorderSide(color: Colors.white70, width: 1.5),
+          checkColor: const MaterialStatePropertyAll(Colors.black),
+          fillColor: MaterialStateProperty.resolveWith((s) =>
+              s.contains(MaterialState.selected)
+                  ? const Color(0xFFE6A800)
+                  : Colors.transparent)),
+      radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith((s) =>
+              s.contains(MaterialState.selected)
+                  ? const Color(0xFFE6A800)
+                  : Colors.white70)),
+      textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: Colors.white, displayColor: Colors.white),
       menuBarTheme: MenuBarThemeData(
           style: MenuStyle(
         padding: MaterialStatePropertyAll(EdgeInsets.zero),
@@ -1124,6 +1153,9 @@ class _MonitorMenu extends StatelessWidget {
         color: _ToolbarTheme.blueColor,
         hoverColor: _ToolbarTheme.hoverBlueColor,
         menuStyle: MenuStyle(
+            backgroundColor: MaterialStatePropertyAll(_ToolbarTheme.barColor),
+            surfaceTintColor:
+                const MaterialStatePropertyAll(Colors.transparent),
             padding:
                 MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 6))),
         menuChildrenGetter: (_) => [buildMonitorSubmenuWidget(context)]);
@@ -1162,9 +1194,7 @@ class _MonitorMenu extends StatelessWidget {
   buildOneMonitorButton(i, curDisplay) => Text(
         '${i + 1}',
         style: TextStyle(
-          color: i == curDisplay
-              ? _ToolbarTheme.blueColor
-              : _ToolbarTheme.inactiveColor,
+          color: i == curDisplay ? const Color(0xFFE6A800) : Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -1211,8 +1241,11 @@ class _MonitorMenu extends StatelessWidget {
                       children: [
                         SvgPicture.asset(
                           "assets/screen.svg",
-                          colorFilter:
-                              ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              i == display.value
+                                  ? const Color(0xFFE6A800)
+                                  : Colors.white,
+                              BlendMode.srcIn),
                         ),
                         Obx(() => buildOneMonitorButton(i, display.value)),
                       ],
@@ -1267,15 +1300,15 @@ class _MonitorMenu extends StatelessWidget {
                 color: Colors.grey,
                 width: 1.0,
               ),
-              color: display.value == i ? activeBgColor : Colors.white,
+              color: display.value == i
+                  ? const Color(0xFFE6A800)
+                  : const Color(0xFF6B6558),
             ),
             child: Center(
                 child: Text(
               '${i + 1}',
               style: TextStyle(
-                color: display.value == i
-                    ? activeTextColor
-                    : _ToolbarTheme.inactiveColor,
+                color: display.value == i ? Colors.black : Colors.white,
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
               ),
