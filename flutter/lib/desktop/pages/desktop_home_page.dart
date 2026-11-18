@@ -267,17 +267,27 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                   Expanded(
                     child: ValueListenableBuilder<TextEditingValue>(
                       valueListenable: model.serverPasswd,
-                      builder: (_, v, __) => Text(v.text,
+                      builder: (_, v, __) => Text(
+                          showOneTime ? v.text : '••••••••  (permanente)',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 15)),
+                          style: TextStyle(
+                              fontSize: showOneTime ? 15 : 12,
+                              color: showOneTime
+                                  ? null
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.color
+                                      ?.withOpacity(0.8))),
                     ),
                   ),
-                  _rtPill('Copiar', () {
-                    Clipboard.setData(
-                        ClipboardData(text: model.serverPasswd.text));
-                    showToast(translate("Copied"));
-                  }),
+                  if (showOneTime)
+                    _rtPill('Copiar', () {
+                      Clipboard.setData(
+                          ClipboardData(text: model.serverPasswd.text));
+                      showToast(translate("Copied"));
+                    }),
                 ],
               ),
             ],
