@@ -133,6 +133,16 @@ Future<void> initEnv(String appType) async {
 void runMainApp(bool startService) async {
   // register uni links
   await initEnv(kAppTypeMain);
+  if (isDesktop &&
+      bind.mainGetLocalOption(key: 'realteq-view-init') != 'Y') {
+    if (bind.mainGetUserDefaultOption(key: kOptionViewStyle).isEmpty ||
+        bind.mainGetUserDefaultOption(key: kOptionViewStyle) ==
+            kRemoteViewStyleOriginal) {
+      await bind.mainSetUserDefaultOption(
+          key: kOptionViewStyle, value: kRemoteViewStyleAdaptive);
+    }
+    await bind.mainSetLocalOption(key: 'realteq-view-init', value: 'Y');
+  }
   checkUpdate();
   // trigger connection status updater
   await bind.mainCheckConnectStatus();
