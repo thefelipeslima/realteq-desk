@@ -416,10 +416,8 @@ class _GeneralState extends State<_General> {
         theme(),
         _Card(title: 'Language', children: [language()]),
         if (!isWeb) audio(context),
-        if (!isWeb) record(context),
         if (!isWeb) WaylandCard(),
         other(),
-        if (!bind.isIncomingOnly()) keyboardShortcuts(),
       ],
     ).marginOnly(bottom: _kListViewBottomMargin);
   }
@@ -527,7 +525,7 @@ class _GeneralState extends State<_General> {
         _OptionCheckBox(context, 'Confirm before closing multiple tabs',
             kOptionEnableConfirmClosingTabs,
             isServer: false),
-      if (!incomingOnly)
+      if (false)
         _OptionCheckBox(
           context,
           'allow-remote-toolbar-docking-any-edge',
@@ -547,7 +545,7 @@ class _GeneralState extends State<_General> {
           kOptionOpenNewConnInTabs,
           isServer: false,
         ),
-        Tooltip(
+        if (false) Tooltip(
           message: translate('port-forward-mux-tip'),
           child: _OptionCheckBox(
             context,
@@ -557,7 +555,7 @@ class _GeneralState extends State<_General> {
           ),
         ),
         // though this is related to GUI, but opengl problem affects all users, so put in config rather than local
-        if (isLinux)
+        if (false)
           Tooltip(
             message: translate('software_render_tip'),
             child: _OptionCheckBox(
@@ -566,7 +564,7 @@ class _GeneralState extends State<_General> {
               kOptionAllowAlwaysSoftwareRender,
             ),
           ),
-        if (!isWeb)
+        if (false)
           Tooltip(
             message: translate('texture_render_tip'),
             child: _OptionCheckBox(
@@ -578,7 +576,7 @@ class _GeneralState extends State<_General> {
                   await bind.mainSetLocalOption(key: k, value: v ? 'Y' : 'N'),
             ),
           ),
-        if (isWindows)
+        if (false)
           Tooltip(
             message: translate('d3d_render_tip'),
             child: _OptionCheckBox(
@@ -589,27 +587,27 @@ class _GeneralState extends State<_General> {
             ),
           ),
       ],
-      if (!isWeb && !bind.isCustomClient())
+      if (false)
         _OptionCheckBox(
           context,
           'Check for software update on startup',
           kOptionEnableCheckUpdate,
           isServer: false,
         ),
-      if (showAutoUpdate)
+      if (false && showAutoUpdate)
         _OptionCheckBox(
           context,
           'Auto update',
           kOptionAllowAutoUpdate,
           isServer: true,
         ),
-      if (isWindows && !outgoingOnly)
+      if (false)
         _OptionCheckBox(
           context,
           'Capture screen using DirectX',
           kOptionDirectxCapture,
         ),
-      if (!isWeb && !incomingOnly) ...[
+      if (false) ...[
         _OptionCheckBox(
           context,
           'Enable TCP hole punching',
@@ -629,7 +627,7 @@ class _GeneralState extends State<_General> {
           isServer: false,
         ),
       ],
-      if (!incomingOnly) ...webrtcOptions(context),
+
       if (!isWeb && !incomingOnly)
         Tooltip(
           message: translate('sync-clipboard-between-sessions-tip'),
@@ -652,7 +650,7 @@ class _GeneralState extends State<_General> {
       ));
     }
 
-    if (!bind.isDisableAccount()) {
+    if (false) {
       children.add(_OptionCheckBox(
         context,
         'note-at-conn-end-tip',
@@ -667,7 +665,7 @@ class _GeneralState extends State<_General> {
         },
       ));
     }
-    children.add(_OptionCheckBox(
+    if (false) children.add(_OptionCheckBox(
       context,
       'Show monitor switch button on the main toolbar',
       kOptionAllowMonitorSwitchMainToolbar,
@@ -694,7 +692,7 @@ class _GeneralState extends State<_General> {
         }
       },
     ));
-    if (mainGetLocalBoolOptionSync(kOptionAllowMonitorSwitchMainToolbar)) {
+    if (false && mainGetLocalBoolOptionSync(kOptionAllowMonitorSwitchMainToolbar)) {
       children.add(KeyedSubtree(
         key: _minToolbarOptionKey,
         child: _OptionCheckBox(
@@ -1035,9 +1033,6 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
               child: Column(children: [
                 permissions(context),
                 password(context),
-                _Card(title: '2FA', children: [tfa()]),
-                if (!isChangeIdDisabled())
-                  _Card(title: 'ID', children: [changeId()]),
                 more(context),
               ]),
             ),
@@ -1247,7 +1242,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
             _OptionCheckBox(
                 context, 'Enable keyboard/mouse', kOptionEnableKeyboard,
                 enabled: enabled, fakeValue: fakeValue),
-            if (isWindows)
+            if (false)
               _OptionCheckBox(
                   context, 'Enable remote printer', kOptionEnableRemotePrinter,
                   enabled: enabled, fakeValue: fakeValue),
@@ -1258,17 +1253,17 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                 enabled: enabled, fakeValue: fakeValue),
             _OptionCheckBox(context, 'Enable audio', kOptionEnableAudio,
                 enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(context, 'Enable camera', kOptionEnableCamera,
+            if (false) _OptionCheckBox(context, 'Enable camera', kOptionEnableCamera,
                 enabled: enabled, fakeValue: fakeValue),
             _OptionCheckBox(context, 'Enable terminal', kOptionEnableTerminal,
                 enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(
+            if (false) _OptionCheckBox(
                 context, 'Enable TCP tunneling', kOptionEnableTunnel,
                 enabled: enabled, fakeValue: fakeValue),
             _OptionCheckBox(
                 context, 'Enable remote restart', kOptionEnableRemoteRestart,
                 enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(
+            if (false) _OptionCheckBox(
                 context, 'Enable recording session', kOptionEnableRecordSession,
                 enabled: enabled, fakeValue: fakeValue),
             if (isWindows)
@@ -1279,7 +1274,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
               _OptionCheckBox(
                   context, 'Enable privacy mode', kOptionEnablePrivacyMode,
                   enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(context, 'Enable remote configuration modification',
+            if (false) _OptionCheckBox(context, 'Enable remote configuration modification',
                 kOptionAllowRemoteConfigModification,
                 enabled: enabled, fakeValue: fakeValue),
           ],
@@ -1450,21 +1445,14 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
   Widget more(BuildContext context) {
     bool enabled = !locked;
     return _Card(title: 'Security', children: [
-      shareRdp(context, enabled),
-      _OptionCheckBox(context, 'Deny LAN discovery', 'enable-lan-discovery',
-          reverse: true, enabled: enabled),
-      ...directIp(context),
-      whitelist(),
-      idWhitelist(),
-      ...autoDisconnect(context),
       _OptionCheckBox(context, 'keep-awake-during-incoming-sessions-label',
           kOptionKeepAwakeDuringIncomingSessions,
           reverse: false, enabled: enabled),
-      if (bind.mainIsInstalled())
+      if (false)
         _OptionCheckBox(context, 'allow-only-conn-window-open-tip',
             'allow-only-conn-window-open',
             reverse: false, enabled: enabled),
-      if (bind.mainIsInstalled() && !isUnlockPinDisabled()) unlockPin()
+      if (false) unlockPin()
     ]);
   }
 
@@ -2006,7 +1994,6 @@ class _DisplayState extends State<_Display> {
     final scrollController = ScrollController();
     return ListView(controller: scrollController, children: [
       viewStyle(context),
-      scrollStyle(context),
       imageQuality(context),
       // codec hidden
       if (isDesktop) trackpadSpeed(context),

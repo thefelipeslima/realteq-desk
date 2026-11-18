@@ -138,11 +138,10 @@ class _PeerTabPageState extends State<PeerTabPage>
   Widget _createSwitchBar(BuildContext context) {
     final model = Provider.of<PeerTabModel>(context);
     var counter = -1;
-    return ReorderableListView(
-        buildDefaultDragHandles: false,
-        onReorder: model.reorder,
-        scrollDirection: Axis.horizontal,
-        physics: NeverScrollableScrollPhysics(),
+    return Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: model.visibleEnabledOrderedIndexs.map((t) {
           final selected = model.currentTab == t;
           final color = selected
@@ -158,9 +157,8 @@ class _PeerTabPageState extends State<PeerTabPage>
             bottom: BorderSide(width: 2, color: color!),
           ));
           counter += 1;
-          return ReorderableDragStartListener(
+          return Container(
               key: ValueKey(t),
-              index: counter,
               child: Obx(() => Tooltip(
                     preferBelow: false,
                     message: model.tabTooltip(t),
@@ -203,7 +201,7 @@ class _PeerTabPageState extends State<PeerTabPage>
                       onHover: (value) => hover.value = value,
                     ),
                   )));
-        }).toList());
+        }).toList()));
   }
 
   Widget _createPeersView() {
