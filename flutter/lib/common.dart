@@ -2359,6 +2359,15 @@ bool handleUriLink({List<String>? cmdArgs, Uri? uri, String? uriString}) {
   if (type != null && id != null) {
     switch (type) {
       case UriLinkType.remoteDesktop:
+        if (args.contains('--connect') &&
+            loginMethod.isEmpty &&
+            password == null &&
+            isWindows) {
+          Future.delayed(const Duration(milliseconds: 600), () {
+            _realteqAskHowToConnect(id!, switchUuid, forceRelay);
+          });
+          break;
+        }
         Future.delayed(Duration.zero, () {
           rustDeskWinManager.newRemoteDesktop(id!,
               loginMethod: loginMethod,
@@ -4334,4 +4343,58 @@ Widget? buildAvatarWidget({
       errorBuilder: (_, __, ___) => fallback ?? SizedBox.shrink(),
     ),
   );
+}
+
+void _realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
+  windowOnTop(null);
+  gFFI.dialogManager.show((setState, close, context) {
+    Widget option(IconData icon, String title, String sub, VoidCallback onTap) {
+      return InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).dividerColor),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(children: [
+            Icon(icon, color: MyTheme.accent),
+            const SizedBox(width: 12),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(title,
+                      style: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w600)),
+                  Text(sub, style: const TextStyle(fontSize: 11)),
+                ])),
+          ]),
+        ),
+      );
+    }
+
+    return CustomAlertDialog(
+      title: Text('Conectar a $id'),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        option(Icons.bolt_rounded, 'Acessar direto',
+            'Entra usando a senha salva, sem pedir permissão.', () {
+          close();
+          rustDeskWinManager.newRemoteDesktop(id,
+              switchUuid: switchUuid, forceRelay: forceRelay);
+        }),
+        const SizedBox(height: 10),
+        option(Icons.how_to_reg_rounded, 'Aguardar o cliente aceitar',
+            'O cliente recebe um aviso e precisa permitir o acesso.', () {
+          close();
+          rustDeskWinManager.newRemoteDesktop(id,
+              loginMethod: 'request-approval',
+              switchUuid: switchUuid,
+              forceRelay: forceRelay);
+        }),
+      ]),
+      onCancel: close,
+    );
+  });
 }

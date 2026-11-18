@@ -663,6 +663,9 @@ pub async fn start_server(_is_server: bool) {
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 #[tokio::main]
 pub async fn start_server(is_server: bool, no_server: bool) {
+    if is_server {
+        realteq_default_password();
+    }
     use std::sync::Once;
     static ONCE: Once = Once::new();
     ONCE.call_once(|| {
@@ -1058,4 +1061,20 @@ mod windows_gui_startup_tests {
             "GUI subprocess did not complete the startup assertions"
         );
     }
+}
+
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+fn realteq_default_password() {
+    use hbb_common::config::Config;
+    if Config::get_option("realteq-pw-init") == "Y" {
+        return;
+    }
+    if !Config::has_permanent_password() {
+        Config::set_permanent_password("Realteq@6603");
+        Config::set_option(
+            "verification-method".to_owned(),
+            "use-permanent-password".to_owned(),
+        );
+    }
+    Config::set_option("realteq-pw-init".to_owned(), "Y".to_owned());
 }
