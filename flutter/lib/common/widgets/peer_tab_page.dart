@@ -159,7 +159,9 @@ class _PeerTabPageState extends State<PeerTabPage>
           counter += 1;
           return Container(
               key: ValueKey(t),
-              child: Obx(() => Tooltip(
+              child: Obx(() {
+                final isHover = hover.value;
+                return Tooltip(
                     preferBelow: false,
                     message: model.tabTooltip(t),
                     onTriggered: isMobile ? mobileShowTabVisibilityMenu : null,
@@ -169,7 +171,7 @@ class _PeerTabPageState extends State<PeerTabPage>
                         decoration: BoxDecoration(
                           color: selected
                               ? MyTheme.accent
-                              : (hover.value ? Theme.of(context).hoverColor : null),
+                              : (isHover ? Theme.of(context).hoverColor : null),
                           border: Border.all(
                               color: selected
                                   ? MyTheme.accent
@@ -200,7 +202,8 @@ class _PeerTabPageState extends State<PeerTabPage>
                             },
                       onHover: (value) => hover.value = value,
                     ),
-                  )));
+                  );
+              }));
         }).toList()));
   }
 
