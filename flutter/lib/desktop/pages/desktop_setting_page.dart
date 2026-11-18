@@ -2626,43 +2626,75 @@ class _AboutState extends State<_About> {
       final myId = data['myId'].toString();
       const linkStyle = TextStyle(decoration: TextDecoration.underline);
       final scrollController = ScrollController();
+      final muted = Theme.of(context).textTheme.bodySmall?.color
+          ?.withOpacity(0.7);
+      Widget infoRow(String label, String value, {bool last = false}) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          decoration: BoxDecoration(
+              border: last
+                  ? null
+                  : Border(
+                      bottom: BorderSide(
+                          color: Theme.of(context).dividerColor, width: 1))),
+          child: Row(children: [
+            Text(label,
+                style: TextStyle(fontSize: 12, color: muted)),
+            const Spacer(),
+            SelectionArea(
+                child: Text(value,
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w500))),
+          ]),
+        );
+      }
+
       return SingleChildScrollView(
         controller: scrollController,
-        child: _Card(title: 'Sobre o Realteq Desk', children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 8.0,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 440),
+            child: Column(children: [
+              const SizedBox(height: 28),
+              Image.asset(
+                  Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/realteq-logo-dark.png'
+                      : 'assets/realteq-logo.png',
+                  height: 96),
+              const SizedBox(height: 14),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                decoration: BoxDecoration(
+                  border: Border.all(color: MyTheme.accent, width: 1.5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text('v$version',
+                    style: const TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.w600)),
               ),
-              SelectionArea(
-                  child: Text('${translate('Version')}: $version')
-                      .marginSymmetric(vertical: 4.0)),
-              SelectionArea(
-                  child: Text('${translate('Build Date')}: $buildDate')
-                      .marginSymmetric(vertical: 4.0)),
-              if (!isWeb)
-                SelectionArea(
-                    child: Text('${translate('Fingerprint')}: $fingerprint')
-                        .marginSymmetric(vertical: 4.0)),
-              SelectionArea(
-                  child: Text('${translate('ID')}: $myId')
-                      .marginSymmetric(vertical: 4.0)),
-              const SizedBox(height: 16),
-              Center(
+              const SizedBox(height: 22),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 child: Column(children: [
-                  Image.asset(
-                      Theme.of(context).brightness == Brightness.dark
-                          ? 'assets/realteq-logo-dark.png'
-                          : 'assets/realteq-logo.png',
-                      height: 80),
-                  const SizedBox(height: 8),
-                  const Text('Desenvolvido por Felipe Lima'),
+                  infoRow('Versão', version),
+                  infoRow('Compilação', buildDate),
+                  infoRow('Seu ID', myId, last: true),
                 ]),
               ),
-            ],
-          ).marginOnly(left: _kContentHMargin)
-        ]),
+              const SizedBox(height: 26),
+              Text('Desenvolvido por Felipe Lima',
+                  style: TextStyle(fontSize: 10.5, color: muted)),
+              const SizedBox(height: 20),
+            ]),
+          ),
+        ),
       );
     });
   }
