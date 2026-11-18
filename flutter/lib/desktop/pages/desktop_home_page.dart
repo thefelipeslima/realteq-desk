@@ -331,6 +331,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           ),
           const Spacer(),
           IconButton(
+            tooltip: 'Histórico',
+            icon: const Icon(Icons.history, size: 20),
+            onPressed: realteqShowHistory,
+          ),
+          IconButton(
             tooltip: 'Configurações',
             icon: const Icon(Icons.settings_outlined, size: 20),
             onPressed: DesktopTabPage.onAddSetting,

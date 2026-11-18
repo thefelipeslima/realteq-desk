@@ -4351,8 +4351,79 @@ Widget? buildAvatarWidget({
   );
 }
 
-void realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
+Future<void> realteqLogHistory(String id, String name, String mode) async {
+  try {
+    final raw = bind.mainGetLocalOption(key: 'realteq-history');
+    final List list = raw.isEmpty ? [] : jsonDecode(raw);
+    list.insert(0, {
+      'id': id,
+      'name': name,
+      'mode': mode,
+      'ts': DateTime.now().millisecondsSinceEpoch,
+    });
+    if (list.length > 200) list.removeRange(200, list.length);
+    await bind.mainSetLocalOption(
+        key: 'realteq-history', value: jsonEncode(list));
+  } catch (_) {}
+}
+
+Future<void> realteqSaveName(String id, String name) async {
+  final n = name.trim();
+  if (n.isEmpty) return;
+  await bind.mainSetPeerAlias(id: id, alias: n);
+}
+
+void realteqShowHistory() {
+  List list = [];
+  try {
+    final raw = bind.mainGetLocalOption(key: 'realteq-history');
+    if (raw.isNotEmpty) list = jsonDecode(raw);
+  } catch (_) {}
+  gFFI.dialogManager.show((setState, close, context) {
+    String fmt(int ts) {
+      final d = DateTime.fromMillisecondsSinceEpoch(ts);
+      String t(int v) => v.toString().padLeft(2, '0');
+      return '${t(d.day)}/${t(d.month)}/${d.year} ${t(d.hour)}:${t(d.minute)}';
+    }
+
+    return CustomAlertDialog(
+      title: const Text('Histórico de atendimentos'),
+      content: SizedBox(
+        width: 420,
+        height: 320,
+        child: list.isEmpty
+            ? const Center(child: Text('Nenhum atendimento registrado ainda.'))
+            : ListView.separated(
+                itemCount: list.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (_, i) {
+                  final e = list[i];
+                  final name = (e['name'] ?? '').toString();
+                  return ListTile(
+                    dense: true,
+                    title: Text(name.isEmpty ? '${e['id']}' : name),
+                    subtitle: Text(
+                        '${e['id']} • ${e['mode']} • ${fmt(e['ts'] ?? 0)}'),
+                  );
+                }),
+      ),
+      actions: [
+        dialogButton('Limpar histórico', isOutline: true, onPressed: () async {
+          await bind.mainSetLocalOption(key: 'realteq-history', value: '');
+          close();
+        }),
+        dialogButton('Fechar', onPressed: close),
+      ],
+      onCancel: close,
+    );
+  });
+}
+
+Future<void> realteqAskHowToConnect(
+    String id, String? switchUuid, bool? forceRelay) async {
   windowOnTop(null);
+  final nameCtrl = TextEditingController(
+      text: await bind.mainGetPeerOption(id: id, key: 'alias'));
   gFFI.dialogManager.show((setState, close, context) {
     Widget option(IconData icon, String title, String sub, VoidCallback onTap) {
       return InkWell(
@@ -4384,6 +4455,14 @@ void realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
     return CustomAlertDialog(
       title: Text('Conectar a $id'),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
+        TextField(
+          controller: nameCtrl,
+          decoration: const InputDecoration(
+              labelText: 'Nome do cliente (opcional)',
+              isDense: true,
+              border: OutlineInputBorder()),
+        ),
+        const SizedBox(height: 12),
         option(Icons.bolt_rounded, 'Acessar direto',
             'Entra com a senha mestra, sem o cliente precisar aceitar.', () {
           close();
@@ -4397,6 +4476,8 @@ void realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
                     onPressed: close2, isOutline: true),
                 dialogButton('Entendi, conectar', onPressed: () {
                   close2();
+                  realteqSaveName(id, nameCtrl.text);
+                  realteqLogHistory(id, nameCtrl.text.trim(), 'Acesso direto');
                   rustDeskWinManager.newRemoteDesktop(id,
                       password: 'Realteq@6603',
                       switchUuid: switchUuid,
@@ -4412,6 +4493,8 @@ void realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
             'O cliente aceita o aviso ou você digita a senha que ele passar.',
             () {
           close();
+          realteqSaveName(id, nameCtrl.text);
+          realteqLogHistory(id, nameCtrl.text.trim(), 'Cliente aceitou');
           rustDeskWinManager.newRemoteDesktop(id,
               loginMethod: 'request-approval',
               switchUuid: switchUuid,
