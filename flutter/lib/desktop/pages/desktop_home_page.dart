@@ -85,9 +85,9 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           alignment: Alignment.center,
           child: loadPowered(context),
         ),
-      Align(
-        alignment: Alignment.center,
-        child: loadLogo(),
+      Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 4),
+        child: Image.asset('assets/realteq-logo.png', height: 64),
       ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
