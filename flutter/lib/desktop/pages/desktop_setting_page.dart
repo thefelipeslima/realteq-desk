@@ -361,25 +361,30 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
             }
             selectedTab.value = tab.key;
           },
-          child: Row(children: [
-            Container(
-              width: 4,
-              height: _kTabHeight * 0.7,
-              color: selected ? _accentColor : null,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: selected ? Theme.of(context).hoverColor : null,
+              borderRadius: BorderRadius.circular(12),
             ),
-            Icon(
-              selected ? tab.selected : tab.unselected,
-              color: selected ? _accentColor : null,
-              size: 20,
-            ).marginOnly(left: 13, right: 10),
-            Text(
-              translate(tab.label),
-              style: TextStyle(
-                  color: selected ? _accentColor : null,
-                  fontWeight: FontWeight.w400,
-                  fontSize: _kContentFontSize),
-            ),
-          ]),
+            child: Row(children: [
+              Container(
+                width: 3,
+                height: 16,
+                margin: const EdgeInsets.only(left: 2, right: 12),
+                decoration: BoxDecoration(
+                  color: selected ? MyTheme.accent : null,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Text(
+                translate(tab.label),
+                style: TextStyle(
+                    fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
+                    fontSize: 13),
+              ),
+            ]),
+          ),
         ),
       );
     });

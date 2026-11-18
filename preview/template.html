@@ -1,0 +1,61 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Previa Realteq Desk</title>
+<style>
+:root{--bg:#EFE4D2;--pn:#E7DAC6;--cd:#F8F0E3;--hv:#DDCEB5;--ln:#D5C5AA;--ls:#A8967A;--fg:#1F1A12;--mu:#55472F;--fa:#7B6A52;--ac:#E6A800;--at:#8A6100;--on:#17130A}
+body.d{--bg:#222225;--pn:#2A2A2E;--cd:#323236;--hv:#3D3D42;--ln:#45454B;--ls:#5E5E65;--fg:#F3F0EA;--mu:#AEABA3;--fa:#7E7B74;--ac:#F5B800;--at:#F5B800}
+*{box-sizing:border-box}body{margin:0;background:#8c8c8c;font-family:"Segoe UI",system-ui,sans-serif;font-size:12px;color:var(--fg);padding:16px}
+.top{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.top button{font:inherit;padding:6px 14px;border-radius:20px;border:1.5px solid #E6A800;background:#fff;cursor:pointer}
+.top button.on{background:#E6A800}
+.win{max-width:900px;margin:auto;background:var(--bg);border-radius:14px;overflow:hidden;border:1px solid var(--ln);min-height:470px}
+.tb{display:flex;align-items:center;gap:8px;padding:6px 12px;color:var(--mu)}.tb img{width:16px;height:16px}.tb .r{margin-left:auto;letter-spacing:8px}
+.body{display:flex;min-height:430px}
+.side{width:236px;padding:6px 12px 10px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--ln)}
+.lg{height:64px;display:block;margin:6px auto 0}
+.card{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:12px}
+.lab{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.4px}
+.big{font-size:20px;font-weight:500;margin:2px 0 6px}
+.row{display:flex;align-items:center;gap:8px}.sp{margin-left:auto}
+.pill{font:inherit;font-size:11px;border:1.5px solid var(--ac);color:var(--at);border-radius:20px;padding:3px 10px;background:none}
+.btn{background:var(--ac);color:var(--on);border-radius:10px;padding:5px 14px;font-weight:500}
+.inp{flex:1;border:1px solid var(--ls);border-radius:10px;padding:8px 10px;color:var(--fa)}
+.main{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px}
+.cl{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);margin-top:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#2e9e5b}.mu{color:var(--mu)}
+.foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;color:var(--fa);font-size:11px}
+.ib{border:0;background:none;color:var(--mu);font-size:15px;cursor:pointer}
+.inst{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);padding:0 4px}.inst i{width:9px;height:9px;border-radius:50%;background:var(--ac)}
+.stat{border-top:1px solid var(--ln);padding:6px 12px;color:var(--mu);display:flex;gap:6px;align-items:center;font-size:11px}
+.nav{padding:7px 10px;border-radius:12px;position:relative}.nav.a{background:var(--hv)}.nav.a:before{content:"";position:absolute;left:0;top:9px;width:3px;height:14px;border-radius:2px;background:var(--ac)}
+.tg{display:inline-block;width:32px;height:18px;border-radius:10px;background:var(--ac);position:relative}.tg:after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--on)}.tg.o{background:var(--hv)}.tg.o:after{right:auto;left:2px;background:var(--mu)}
+.rw{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--ln)}.rw:last-child{border:0}
+.tool{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:6px;margin:6px auto;width:max-content;max-width:96%}
+.tool span{padding:5px 9px;border-radius:10px;font-size:11px;color:var(--mu)}
+.scr{margin:10px;height:230px;border-radius:10px;background:#2b3a4a;color:#cbd5e1;display:flex;align-items:center;justify-content:center}
+.tab{padding:4px 12px;border-radius:10px;background:var(--pn)}.tab.a{background:var(--ac);color:var(--on);font-weight:500}
+.hidden{display:none}
+</style></head><body>
+<div class="top"><button class="on" data-s="home">Início</button><button data-s="set">Configurações</button><button data-s="ses">Sessão remota</button><button id="th">Tema escuro</button></div>
+<div class="win"><div class="tb"><img src="data:image/png;base64,__I__" alt=""><span>Realteq Desk</span><span class="r">–  ▢  ✕</span></div>
+<div id="home" class="body"><div class="side"><img class="lg" id="lg" alt="Realteq">
+<div class="card"><div class="lab">ID</div><div class="row"><div class="big">261 836 621</div><button class="pill sp">Copiar</button></div>
+<div class="lab" style="margin-top:6px">Senha</div><div class="row"><div class="big" style="font-size:16px">••••••••</div><button class="pill sp">Copiar</button><button class="ib" aria-label="Trocar">⟳</button></div></div>
+<div class="foot"><div><button class="pill">Instalar</button></div><div class="row"><span>v1.5.3</span><span class="sp"></span><button class="ib" aria-label="Configurações">⚙</button><button class="ib" id="th2" aria-label="Tema">☾</button></div></div></div>
+<div class="main"><div class="card"><div style="font-size:15px;font-weight:500;margin-bottom:8px">Controle um computador remoto</div><div class="row"><div class="inp">ID do cliente</div><span class="btn">Conectar</span></div></div>
+<div class="card" style="flex:1"><div class="row" style="margin-bottom:4px"><span class="pill" style="background:var(--ac);color:var(--on)">Recentes</span><span class="pill">Favoritos</span></div>
+<div class="cl"><span class="dot"></span><div><div>Padaria do João</div><div class="mu" style="font-size:11px">482 119 307</div></div><button class="pill sp">Conectar</button></div>
+<div class="cl"><span class="dot"></span><div><div>Mercado Central</div><div class="mu" style="font-size:11px">731 004 882</div></div><button class="pill sp">Conectar</button></div></div>
+<div class="stat"><span class="dot"></span>Servidor Realteq conectado</div></div></div>
+<div id="set" class="body hidden"><div class="side" style="width:200px"><div style="font-size:15px;font-weight:500;padding:8px 4px">Configurações</div><div class="nav a">Geral</div><div class="nav">Segurança</div><div class="nav">Exibição</div><div class="nav">Sobre</div></div>
+<div class="main"><div class="card"><div class="lab">Geral</div><div class="rw"><span>Iniciar com o Windows</span><span class="tg"></span></div><div class="rw"><span>Tema escuro</span><span class="tg o"></span></div><div class="rw"><span>Senha permanente</span><button class="pill">Alterar</button></div></div>
+<div class="card" style="text-align:center"><img id="lg2" style="height:70px" alt=""><div class="mu" style="margin-top:6px">Desenvolvido por Felipe Lima</div></div></div></div>
+<div id="ses" class="body hidden" style="flex-direction:column"><div class="row" style="padding:4px 12px"><span class="tab a">Padaria do João</span><span class="tab">Mercado Central</span></div>
+<div class="tool"><span>Monitor</span><span>Controle</span><span>Exibição</span><span>Teclado</span><span>Clipboard</span><span>Arquivos</span><span>Terminal</span><span>Privacidade</span><span>Reiniciar</span><span>Chat</span><span>Info</span><span>Encerrar</span></div>
+<div class="scr">Tela do computador do cliente</div></div></div>
+<script>
+var L="data:image/png;base64,__L__",D="data:image/png;base64,__LD__",b=document.body;
+function up(){var d=b.classList.contains('d');document.getElementById('lg').src=d?D:L;document.getElementById('lg2').src=d?D:L;document.getElementById('th').textContent=d?'Tema claro':'Tema escuro'}
+function tg(){b.classList.toggle('d');up()}
+document.getElementById('th').onclick=tg;document.getElementById('th2').onclick=tg;
+document.querySelectorAll('[data-s]').forEach(function(x){x.onclick=function(){['home','set','ses'].forEach(function(i){document.getElementById(i).classList.toggle('hidden',i!=x.dataset.s)});document.querySelectorAll('[data-s]').forEach(function(y){y.classList.toggle('on',y==x)})}});
+up();
+</script></body></html>
