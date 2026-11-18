@@ -330,6 +330,15 @@ class _ConnectionPageState extends State<ConnectionPage>
       bool isTerminal = false,
       bool isTcpTunneling = false}) {
     var id = _idController.id;
+    if (isWindows &&
+        id.isNotEmpty &&
+        !isFileTransfer &&
+        !isViewCamera &&
+        !isTerminal &&
+        !isTcpTunneling) {
+      realteqAskHowToConnect(id, null, null);
+      return;
+    }
     connect(context, id,
         isFileTransfer: isFileTransfer,
         isViewCamera: isViewCamera,

@@ -2364,7 +2364,7 @@ bool handleUriLink({List<String>? cmdArgs, Uri? uri, String? uriString}) {
             password == null &&
             isWindows) {
           Future.delayed(const Duration(milliseconds: 600), () {
-            _realteqAskHowToConnect(id!, switchUuid, forceRelay);
+            realteqAskHowToConnect(id!, switchUuid, forceRelay);
           });
           break;
         }
@@ -4351,7 +4351,7 @@ Widget? buildAvatarWidget({
   );
 }
 
-void _realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
+void realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
   windowOnTop(null);
   gFFI.dialogManager.show((setState, close, context) {
     Widget option(IconData icon, String title, String sub, VoidCallback onTap) {
@@ -4385,14 +4385,32 @@ void _realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
       title: Text('Conectar a $id'),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         option(Icons.bolt_rounded, 'Acessar direto',
-            'Entra usando a senha salva, sem pedir permissão.', () {
+            'Entra com a senha mestra, sem o cliente precisar aceitar.', () {
           close();
-          rustDeskWinManager.newRemoteDesktop(id,
-              switchUuid: switchUuid, forceRelay: forceRelay);
+          gFFI.dialogManager.show((setState, close2, context) {
+            return CustomAlertDialog(
+              title: const Text('Lembrete'),
+              content: Text(
+                  'Você vai entrar direto no computador $id usando a senha mestra, sem que o cliente precise aceitar. Use só quando o cliente já autorizou o acesso.'),
+              actions: [
+                dialogButton('Cancelar',
+                    onPressed: close2, isOutline: true),
+                dialogButton('Entendi, conectar', onPressed: () {
+                  close2();
+                  rustDeskWinManager.newRemoteDesktop(id,
+                      password: 'Realteq@6603',
+                      switchUuid: switchUuid,
+                      forceRelay: forceRelay);
+                }),
+              ],
+              onCancel: close2,
+            );
+          });
         }),
         const SizedBox(height: 10),
         option(Icons.how_to_reg_rounded, 'Aguardar o cliente aceitar',
-            'O cliente recebe um aviso e precisa permitir o acesso.', () {
+            'O cliente aceita o aviso ou você digita a senha que ele passar.',
+            () {
           close();
           rustDeskWinManager.newRemoteDesktop(id,
               loginMethod: 'request-approval',
@@ -4400,6 +4418,12 @@ void _realteqAskHowToConnect(String id, String? switchUuid, bool? forceRelay) {
               forceRelay: forceRelay);
         }),
       ]),
+      actions: [
+        dialogButton('Criar atalho na área de trabalho', onPressed: () {
+          bind.mainCreateShortcut(id: id);
+          showToast('Atalho criado na área de trabalho');
+        }, isOutline: true),
+      ],
       onCancel: close,
     );
   });
