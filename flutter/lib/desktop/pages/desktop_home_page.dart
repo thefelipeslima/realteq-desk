@@ -654,6 +654,41 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         content != 'install_daemon_tip') {
       return const SizedBox();
     }
+    if (content == 'install_daemon_tip') {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 12, 4),
+        child: Tooltip(
+          message: 'Instalar no sistema (necessário para o UAC)',
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: onPressed,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 9,
+                    height: 9,
+                    decoration: const BoxDecoration(
+                        color: MyTheme.accent, shape: BoxShape.circle),
+                  ),
+                  const SizedBox(width: 6),
+                  Text('Instalar no sistema',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.color
+                              ?.withOpacity(0.75))),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     void closeCard() async {
       if (closeOption != null) {
         await bind.mainSetLocalOption(key: closeOption, value: 'N');
