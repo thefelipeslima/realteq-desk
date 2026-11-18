@@ -176,44 +176,114 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     );
   }
 
-  Widget buildRealteqCard(BuildContext context) {
-    final model = gFFI.serverModel;
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-            color: Theme.of(context).extension<ColorThemeExtension>()?.border ??
-                Colors.transparent),
+  Widget _rtPill(String label, VoidCallback onTap) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: MyTheme.accent, width: 1.5),
+        ),
+        child: Text(label,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
       ),
-      child: Column(
-        children: [
-          buildIDBoard(context),
-          buildPasswordBoard(context),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    );
+  }
+
+  Widget buildRealteqCard(BuildContext context) {
+    final label = TextStyle(
+        fontSize: 11,
+        letterSpacing: 0.4,
+        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7));
+    return ChangeNotifierProvider.value(
+      value: gFFI.serverModel,
+      child: Consumer<ServerModel>(builder: (context, model, _) {
+        final showOneTime = model.approveMode != 'click' &&
+            model.verificationMethod != kUsePermanentPassword;
+        return Container(
+          margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+                color:
+                    Theme.of(context).extension<ColorThemeExtension>()?.border ??
+                        Colors.transparent),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextButton(
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: model.serverId.text));
-                  showToast(translate("Copied"));
-                },
-                child: const Text('Copiar ID'),
+              Text('ID', style: label),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: model.serverId,
+                      builder: (_, v, __) => Text(v.text,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500)),
+                    ),
+                  ),
+                  _rtPill('Copiar', () {
+                    Clipboard.setData(ClipboardData(text: model.serverId.text));
+                    showToast(translate("Copied"));
+                  }),
+                ],
               ),
-              TextButton(
-                onPressed: () {
-                  Clipboard.setData(
-                      ClipboardData(text: model.serverPasswd.text));
-                  showToast(translate("Copied"));
-                },
-                child: const Text('Copiar senha'),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Text('SENHA', style: label),
+                  const Spacer(),
+                  if (showOneTime)
+                    InkWell(
+                      onTap: () => bind.mainUpdateTemporaryPassword(),
+                      child: Tooltip(
+                        message: translate('Refresh Password'),
+                        child: const Icon(Icons.refresh, size: 16),
+                      ),
+                    ),
+                  if (!bind.isDisableSettings())
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: InkWell(
+                        onTap: () => DesktopSettingPage.switch2page(
+                            SettingsTabKey.safety),
+                        child: Tooltip(
+                          message: translate('Change Password'),
+                          child: const Icon(Icons.edit_outlined, size: 16),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: model.serverPasswd,
+                      builder: (_, v, __) => Text(v.text,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                  _rtPill('Copiar', () {
+                    Clipboard.setData(
+                        ClipboardData(text: model.serverPasswd.text));
+                    showToast(translate("Copied"));
+                  }),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 

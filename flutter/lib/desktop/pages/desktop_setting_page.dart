@@ -2641,16 +2641,24 @@ Widget _Card(
         child: SizedBox(
           width: _kCardFixedWidth,
           child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(
+                  color: const Color(0x55A8967A)),
+            ),
             child: Column(
               children: [
                 Row(
                   children: [
                     Expanded(
                         child: Text(
-                      translate(title),
+                      translate(title).toUpperCase(),
                       textAlign: TextAlign.start,
                       style: const TextStyle(
-                        fontSize: _kTitleFontSize,
+                        fontSize: 12,
+                        letterSpacing: 0.4,
+                        fontWeight: FontWeight.w500,
                       ),
                     )),
                     ...?title_suffix
