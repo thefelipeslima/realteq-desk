@@ -12,6 +12,7 @@ import 'package:flutter_hbb/models/platform_model.dart';
 import 'package:flutter_hbb/models/server_model.dart';
 import 'package:flutter_hbb/models/state_model.dart';
 import 'package:flutter_hbb/realteq/rt.dart';
+import 'package:flutter_hbb/realteq/version.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -881,14 +882,11 @@ class _AboutSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.rt;
-    return FutureBuilder<String>(
-      future: bind.mainGetVersion(),
-      builder: (_, snap) => RtRow(
-        title: 'Realteq Desk',
-        sub: 'Suporte remoto da Realteq',
-        trailing: Text(snap.hasData ? 'v${snap.data}' : '',
-            style: TextStyle(color: p.mut, fontSize: 13)),
-      ),
+    return RtRow(
+      title: 'Realteq Desk',
+      sub: 'Suporte remoto da Realteq',
+      trailing: Text('v$kRealteqVersion',
+          style: TextStyle(color: p.mut, fontSize: 13)),
     );
   }
 }

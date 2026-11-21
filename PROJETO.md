@@ -33,3 +33,7 @@ Ferramenta interna de suporte remoto para Windows (estilo AnyDesk). Fork do Rust
 - Bandeja que fecha sozinha em um PC: precisa do log em `%AppData%\RealteqDesk\log` daquele PC.
 - Aviso discreto ao cliente não alterado; histórico sem duração; varredura de Configurações parcial.
 - Não verificado em uso real: barra/menus na sessão, instalação, "Sair" da bandeja, conexão direta com senha mestra.
+
+## Versão
+- Versão exibida: `flutter/lib/realteq/version.dart` (hoje 0.9.1) e `VERSION` do workflow (nome do exe). A versão interna do motor (1.5.3) NÃO muda, pois o protocolo compara versões entre computadores.
+- A cada build nova rodar `powershell -ExecutionPolicy Bypass -File scripts/bump-versao.ps1`: 0.9.1 ... 0.9.9, 0.10, 0.11, ... Nunca vai para 1.0 sem OK do usuário.

@@ -9,3 +9,4 @@ Regra: só enviar ao GitHub e compilar quando o usuário der o OK. Antes de envi
 
 ## A fazer (conforme o usuário for pedindo)
 - Arrastar a janela, sol/lua, senha das configurações (rt6603), coroa no menu: feitos.
+- Versão exibida 0.9.1 (nome do exe e tela Sobre); script de versionamento em scripts/bump-versao.ps1.
