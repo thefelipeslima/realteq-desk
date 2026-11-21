@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Realteq Desk - Prévias de layout</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#2b2722;color:#222;min-height:100vh;padding:20px 16px 40px}
+.top{max-width:1040px;margin:0 auto 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.top h1{font-size:15px;color:#f3e9d6;font-weight:600}
+.seg{display:flex;gap:4px;background:#3a352e;padding:4px;border-radius:12px}
+.seg button{border:0;background:none;color:#cbbfa9;padding:8px 14px;border-radius:9px;font:600 13px 'Segoe UI';cursor:pointer}
+.seg button.on{background:#E6A800;color:#241b00}
+.note{max-width:1040px;margin:0 auto 14px;color:#b8ad98;font-size:13px}
+.win{max-width:1040px;margin:0 auto;height:620px;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 20px 60px #0008;display:flex}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.06em}
+/* fake remote desktop */
+.rd{position:absolute;inset:0;background:linear-gradient(135deg,#3a6ea5,#1e3c5c 60%,#14283f)}
+.rd .w{position:absolute;background:#f4f6f8;border-radius:8px;box-shadow:0 10px 30px #0006;overflow:hidden}
+.rd .w b{display:block;height:22px;background:#dfe5ec}
+.rd .w i{display:block;height:8px;background:#cfd6de;margin:10px;border-radius:4px}
+.rd .tb{position:absolute;left:0;right:0;bottom:0;height:34px;background:#0d1b2acc}
+.tog{width:38px;height:22px;border-radius:12px;position:relative;flex:none}
+.tog:after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.tog.on:after{left:19px}
+/* ===== A: Névoa ===== */
+.A{--bg:#F8F0E3;--ink:#2a2418;--mut:#8a7d66;--card:#fff;--line:#e8dcc6;--ac:#E6A800;--acd:#241b00;background:var(--bg);color:var(--ink);flex-direction:column}
+.A .bar{height:54px;display:flex;align-items:center;padding:0 22px;gap:12px}
+.A .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+.A .logo span{width:26px;height:26px;border-radius:8px;background:var(--ac);display:grid;place-items:center;color:var(--acd);font-size:13px}
+.A .sp{flex:1}.A .ib{width:34px;height:34px;border-radius:10px;border:0;background:none;color:var(--mut);display:grid;place-items:center;cursor:pointer}
+.A .ib:hover{background:#efe3cc}
+.A .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-bottom:30px}
+.A .lbl{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.A .big{font-size:60px;font-weight:300;letter-spacing:.08em;line-height:1.1}
+.A .pw{margin-top:6px;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:8px 8px 8px 20px;font-size:17px}
+.A .pw button{border:0;background:#f3e8d2;border-radius:20px;padding:7px 12px;font-weight:600;color:var(--ink);display:flex;gap:6px;align-items:center;cursor:pointer;font-size:12px}
+.A .cmd{margin-top:34px;width:560px;max-width:90%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px;display:flex;align-items:center;gap:8px;box-shadow:0 12px 30px #b9964a22}
+.A .cmd input{flex:1;border:0;outline:0;font:400 18px 'Segoe UI';padding:10px 14px;background:none;color:var(--ink)}
+.A .go{border:0;background:var(--ac);color:var(--acd);font:700 14px 'Segoe UI';padding:12px 22px;border-radius:12px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.A .chips{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.A .chip{background:#f0e5cf;border-radius:20px;padding:6px 14px;font-size:13px;color:#5b4f38}
+.A .foot{height:48px;display:flex;align-items:center;padding:0 22px;gap:12px;font-size:12px;color:var(--mut);border-top:1px solid var(--line)}
+.A .inst{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:8px 14px;font:600 12px 'Segoe UI';cursor:pointer}
+.A .modal{position:absolute;inset:0;background:#2a241855;display:grid;place-items:center;backdrop-filter:blur(3px)}
+.A .dlg{width:560px;background:var(--card);border-radius:22px;padding:28px;box-shadow:0 30px 80px #0005}
+.A .dlg h3{font-size:20px;font-weight:600}.A .dlg p{color:var(--mut);font-size:13px;margin:4px 0 18px}
+.A .opt{display:flex;gap:14px;align-items:center;border:1.5px solid var(--line);border-radius:16px;padding:16px;margin-top:10px;cursor:pointer}
+.A .opt.on{border-color:var(--ac);background:#fff8e6}
+.A .opt .ic{width:42px;height:42px;border-radius:12px;background:#f3e8d2;display:grid;place-items:center}
+.A .opt.on .ic{background:var(--ac)}
+.A .opt b{display:block;font-size:15px}.A .opt small{color:var(--mut);font-size:12.5px}
+.A .nm{margin-top:16px;display:flex;gap:10px}.A .nm input{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font:14px 'Segoe UI';background:#fffdf8}
+.A .set{flex:1;overflow:auto;padding:6px 0 20px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.A .set h2{width:640px;max-width:92%;font-size:26px;font-weight:300;margin-top:8px}
+.A .sc{width:640px;max-width:92%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 20px}
+.A .row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1e8d6;font-size:14px}
+.A .row:last-child{border:0}.A .row small{display:block;color:var(--mut);font-size:12px}
+.A .tog{background:#e2d6bd}.A .tog.on{background:var(--ac)}
+.A .seg2{display:flex;background:#f0e5cf;border-radius:10px;padding:3px}.A .seg2 span{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;color:#7a6c50}.A .seg2 .on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0002}
+.A .pill{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:#fffdf8f2;border-radius:30px;padding:6px;display:flex;gap:4px;align-items:center;box-shadow:0 10px 30px #0006;color:var(--ink)}
+.A .pill .t{padding:8px 12px;border-radius:22px;border:0;background:none;display:flex;gap:7px;align-items:center;font:600 13px 'Segoe UI';color:#4a3f2a;cursor:pointer}
+.A .pill .t.on{background:var(--ac);color:var(--acd)}
+.A .pill .end{background:#d6402b;color:#fff;border-radius:22px;padding:8px 14px;border:0;font:700 13px 'Segoe UI';display:flex;gap:6px;align-items:center}
+.A .pill .sepv{width:1px;height:22px;background:#e8dcc6;margin:0 4px}
+.A .stat{position:absolute;bottom:14px;left:14px;background:#fffdf8ee;border-radius:12px;padding:8px 12px;font-size:12px;display:flex;gap:10px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#3bb273;display:inline-block}
+/* ===== B: Obsidiana ===== */
+.B{--bg:#17150f;--pn:#201d15;--ink:#f3ead8;--mut:#9b917a;--line:#332e22;--ac:#E6A800;background:var(--bg);color:var(--ink)}
+.B .rail{width:72px;background:#110f0a;display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px;border-right:1px solid var(--line)}
+.B .rail .lg{width:38px;height:38px;border-radius:11px;background:var(--ac);color:#241b00;display:grid;place-items:center;font-weight:800;margin-bottom:14px}
+.B .rail button{width:46px;height:46px;border-radius:13px;border:0;background:none;color:var(--mut);display:grid;place-items:center;cursor:pointer;position:relative}
+.B .rail button.on{background:#2a251a;color:var(--ac)}
+.B .rail button.on:before{content:"";position:absolute;left:-13px;top:12px;height:22px;width:3px;border-radius:3px;background:var(--ac)}
+.B .main{flex:1;display:flex;flex-direction:column;min-width:0}
+.B .hd{height:60px;display:flex;align-items:center;padding:0 28px;justify-content:space-between;border-bottom:1px solid var(--line)}
+.B .hd h2{font-size:17px;font-weight:600}.B .hd small{color:var(--mut);font-size:12px;display:flex;gap:6px;align-items:center}
+.B .cols{flex:1;display:grid;grid-template-columns:340px 1fr;gap:20px;padding:24px 28px;min-height:0}
+.B .pn{background:var(--pn);border:1px solid var(--line);border-radius:18px;padding:22px}
+.B .pn .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.B .id{font-size:44px;font-weight:600;letter-spacing:.06em;margin:8px 0 2px;color:#fff}
+.B .nm{color:var(--mut);font-size:13px}
+.B .pwb{margin-top:18px;background:#15130d;border:1px dashed #4a4130;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.B .pwb b{font-size:22px;letter-spacing:.2em;color:var(--ac);font-family:Consolas,monospace}
+.B .btn{border:0;border-radius:12px;padding:11px 16px;font:700 13px 'Segoe UI';cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.B .pri{background:var(--ac);color:#241b00}.B .gh{background:#2a251a;color:var(--ink)}
+.B .inp{display:flex;gap:10px;margin:14px 0 18px}.B .inp input{flex:1;background:#15130d;border:1px solid var(--line);border-radius:12px;padding:13px 16px;color:var(--ink);font:16px 'Segoe UI';outline:0}
+.B table{width:100%;border-collapse:collapse;font-size:13.5px}.B th{text-align:left;color:var(--mut);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 6px}
+.B td{padding:12px 6px;border-top:1px solid var(--line)}.B td .av{width:28px;height:28px;border-radius:50%;background:#3a3222;display:inline-grid;place-items:center;font-size:12px;margin-right:10px;color:var(--ac);font-weight:700}
+.B .modal{position:absolute;inset:0;background:#000a;display:grid;place-items:center}
+.B .dlg{width:600px;background:var(--pn);border:1px solid #433b2a;border-radius:20px;padding:26px}
+.B .dlg h3{font-size:19px}.B .dlg p{color:var(--mut);font-size:13px;margin:4px 0 16px}
+.B .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.B .opt{border:1.5px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;background:#17150f}.B .opt.on{border-color:var(--ac);background:#2a2314}
+.B .opt .ic{width:40px;height:40px;border-radius:11px;background:#2a251a;display:grid;place-items:center;color:var(--ac);margin-bottom:12px}
+.B .opt b{display:block;margin-bottom:4px}.B .opt small{color:var(--mut);font-size:12.5px;line-height:1.4;display:block}
+.B .warn{margin-top:14px;font-size:12.5px;color:#e6c46a;background:#2e2610;border-radius:10px;padding:10px 12px;display:flex;gap:8px}
+.B .st{flex:1;display:grid;grid-template-columns:210px 1fr;min-height:0}
+.B .st .cat{border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:2px}
+.B .st .cat div{padding:10px 14px;border-radius:10px;font-size:14px;color:var(--mut);display:flex;gap:10px;align-items:center}
+.B .st .cat .on{background:#2a251a;color:var(--ink)}
+.B .st .body{padding:24px 32px;overflow:auto}
+.B .st h3{font-size:20px;margin-bottom:4px}.B .st .sub{color:var(--mut);font-size:13px;margin-bottom:18px}
+.B .row{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;background:var(--pn);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;font-size:14px}
+.B .row small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+.B .tog{background:#3a3425}.B .tog.on{background:var(--ac)}.B .tog.on:after{background:#241b00}
+.B .vt{position:absolute;left:14px;top:50%;transform:translateY(-50%);background:#17150ff0;border:1px solid #3a3425;border-radius:20px;padding:10px 8px;display:flex;flex-direction:column;gap:4px;box-shadow:0 14px 40px #000a;color:var(--ink)}
+.B .vt button{width:42px;height:42px;border-radius:13px;border:0;background:none;color:#c9bea5;display:grid;place-items:center;cursor:pointer}
+.B .vt button.on{background:var(--ac);color:#241b00}.B .vt .hr{height:1px;background:#3a3425;margin:4px 6px}
+.B .vt .end{background:#d6402b;color:#fff}
+.B .mon{position:absolute;right:14px;top:14px;background:#17150ff0;border:1px solid #3a3425;border-radius:14px;padding:10px;display:flex;gap:8px;color:var(--ink);align-items:center;font-size:12px}
+.B .mon span.m{width:46px;height:30px;border-radius:5px;border:1.5px solid #5a503a;display:grid;place-items:center;font-weight:700}.B .mon span.m.on{border-color:var(--ac);color:var(--ac)}
+/* ===== C: Mosaico ===== */
+.C{--bg:#EFE4D2;--ink:#2b2316;--mut:#7d705a;--ac:#E6A800;background:var(--bg);color:var(--ink);flex-direction:column;padding:22px}
+.C .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.C .hd .logo{font-weight:800;font-size:20px;letter-spacing:-.02em}.C .hd .logo em{font-style:normal;color:var(--ac)}
+.C .hd .nav{display:flex;gap:6px;background:#e3d5bc;padding:4px;border-radius:30px}
+.C .hd .nav span{padding:8px 18px;border-radius:24px;font-size:13px;font-weight:600;color:#6d5f46}.C .hd .nav .on{background:#2b2316;color:#fff}
+.C .grid{flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr);gap:14px;min-height:0}
+.C .t{border-radius:24px;padding:20px;position:relative;overflow:hidden}
+.C .t .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.65}
+.C .id{grid-column:1/4;grid-row:1/3;background:var(--ac);color:#241b00;display:flex;flex-direction:column;justify-content:space-between}
+.C .id b{font-size:64px;font-weight:800;letter-spacing:.04em;line-height:1}
+.C .pw{grid-column:4/7;grid-row:1/2;background:#2b2316;color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.C .pw b{font-size:30px;letter-spacing:.2em;font-family:Consolas,monospace;color:var(--ac)}
+.C .cn{grid-column:4/7;grid-row:2/3;background:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.C .cn .f{display:flex;gap:8px}.C .cn input{flex:1;border:2px solid #efe4d2;border-radius:14px;padding:10px 14px;font:17px 'Segoe UI';outline:0;min-width:0}
+.C .go{border:0;background:#2b2316;color:#fff;border-radius:14px;padding:0 18px;font:700 14px 'Segoe UI';cursor:pointer;display:flex;align-items:center;gap:6px}
+.C .hs{grid-column:1/5;grid-row:3/5;background:#fbf6ec;display:flex;flex-direction:column;gap:6px}
+.C .hs .r{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:14px;background:#fff;font-size:13.5px}
+.C .hs .r .av{width:30px;height:30px;border-radius:10px;background:#f3e0a8;display:grid;place-items:center;font-weight:700;color:#7a5a00}
+.C .hs .r span{margin-left:auto;color:var(--mut);font-size:12px}
+.C .in{grid-column:5/7;grid-row:3/4;background:#d9c7a3;display:flex;flex-direction:column;justify-content:space-between}
+.C .sv{grid-column:5/7;grid-row:4/5;background:#bfd4b4;display:flex;flex-direction:column;justify-content:space-between;color:#1c3319}
+.C .modal{position:absolute;inset:0;background:#2b231688;display:grid;place-items:center}
+.C .dlg{width:620px;background:#fbf6ec;border-radius:30px;padding:26px}
+.C .dlg h3{font-size:22px;font-weight:700}.C .dlg p{font-size:13px;color:var(--mut);margin:4px 0 14px}
+.C .big2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.C .bc{border-radius:22px;padding:18px;height:170px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
+.C .bc.a{background:var(--ac);color:#241b00}.C .bc.b{background:#2b2316;color:#fff}
+.C .bc b{font-size:19px;display:block}.C .bc small{font-size:12.5px;opacity:.8;line-height:1.35;display:block;margin-top:4px}
+.C .nm{margin-top:12px;display:flex;gap:10px}.C .nm input{flex:1;border:2px solid #efe4d2;border-radius:14px;padding:11px 14px;font:14px 'Segoe UI';background:#fff}
+.C .sg{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;min-height:0}
+.C .sg .t{background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.C .sg .t.hl{background:var(--ac)}.C .sg .t h4{font-size:15px;margin-bottom:6px;display:flex;gap:8px;align-items:center}
+.C .sg .r{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13.5px;border-top:1px solid #f1e8d6}
+.C .sg .t.hl .r{border-color:#0002}
+.C .tog{background:#e2d6bd}.C .tog.on{background:#2b2316}.C .sg .hl .tog{background:#0003}.C .sg .hl .tog.on{background:#241b00}
+.C .dock{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#2b2316f2;border-radius:26px;padding:8px 10px;display:flex;gap:4px;box-shadow:0 16px 40px #000a;color:#fff}
+.C .dock button{border:0;background:none;color:#e8dcc6;padding:8px 14px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 11px 'Segoe UI';cursor:pointer}
+.C .dock button.on{background:var(--ac);color:#241b00}.C .dock .end{background:#d6402b;color:#fff}
+.C .info{position:absolute;top:14px;left:14px;background:#fbf6ecf0;border-radius:20px;padding:8px 14px;display:flex;gap:10px;align-items:center;font-size:12.5px;font-weight:600;color:var(--ink)}
+</style></head><body>
+<div class="top"><h1>Realteq Desk · prévias de novo visual</h1>
+<div class="seg" id="optSeg"></div><div class="seg" id="scrSeg"></div></div>
+<p class="note" id="note"></p>
+<div id="stage"></div>
+<script>
+const P={
+home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .6 3.3 2.5 3.5 6"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+refresh:'<path d="M20 11a8 8 0 0 0-14-4M4 4v4h4M4 13a8 8 0 0 0 14 4M20 20v-4h-4"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+kbd:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
+x:'<path d="M6 6l12 12M18 6L6 18"/>',
+moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+down:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 4-7 8-7s7 2 8 7"/>'
+};
+const I=n=>`<svg class="i" viewBox="0 0 24 24">${P[n]}</svg>`;
+const T=(on)=>`<div class="tog ${on?'on':''}"></div>`;
+const desk=`<div class="rd"><div class="w" style="left:6%;top:16%;width:42%;height:52%"><b></b><i></i><i style="width:70%"></i><i style="width:85%"></i><i style="width:55%"></i></div><div class="w" style="left:40%;top:30%;width:44%;height:50%;"><b style="background:#c9d8ea"></b><i></i><i style="width:60%"></i><i style="width:90%"></i></div><div class="tb"></div></div>`;
+const clients=[['Clínica Aurora','482 913 077','hoje 14:02'],['Escritório Menezes','175 330 204','ontem'],['Loja Central','908 441 652','há 3 dias'],['Dr. Paulo Lima','336 120 889','há 6 dias']];
+const O={
+A:{name:'A · Névoa',note:'Claro, silencioso e centrado. Uma coisa por vez: seu ID no meio, uma barra de comando para conectar, tudo flutuando. A sessão usa uma pílula flutuante no topo que não cobre a tela do cliente.',
+home:`<div class="win A"><div class="bar"><div class="logo"><span>R</span>Realteq Desk</div><div class="sp"></div><button class="ib">${I('clock')}</button><button class="ib">${I('moon')}</button><button class="ib">${I('gear')}</button></div>
+<div class="hero"><div class="lbl">Seu ID</div><div class="big mono">482 913 077</div>
+<div class="pw"><span>Senha temporária&nbsp; <b>k7Pm92</b></span><button>${I('copy')}Copiar</button><button>${I('refresh')}</button></div>
+<div class="cmd">${I('monitor')}<input placeholder="ID do computador que você vai acessar"><button class="go">Conectar ${I('arrow')}</button></div>
+<div class="chips">${clients.map(c=>`<span class="chip">${c[0]}</span>`).join('')}</div></div>
+<div class="foot"><span class="dot"></span>Serviço ativo · v1.5.3<span style="flex:1"></span><button class="inst">Instalar no computador</button></div></div>`,
+conn:`<div class="win A"><div class="bar"><div class="logo"><span>R</span>Realteq Desk</div></div><div class="modal"><div class="dlg"><h3>Como você quer entrar?</h3><p>Computador 175 330 204</p>
+<div class="opt on"><div class="ic">${I('key')}</div><div><b>Acesso direto</b><small>Entra com a chave mestra, sem o cliente aceitar.</small></div></div>
+<div class="opt"><div class="ic">${I('user')}</div><div><b>Aguardar o cliente</b><small>O cliente aceita na tela dele ou informa a senha.</small></div></div>
+<div class="nm"><input placeholder="Nome do cliente (opcional)" value="Escritório Menezes"><button class="go">Entrar</button></div></div></div></div>`,
+sess:`<div class="win A">${desk}<div class="pill"><button class="t on">${I('monitor')}1</button><button class="t">${I('monitor')}2</button><span class="sepv"></span><button class="t">${I('kbd')}</button><button class="t">${I('folder')}</button><button class="t">${I('chat')}</button><button class="t">${I('full')}</button><span class="sepv"></span><button class="end">${I('x')}Encerrar</button></div><div class="stat"><span class="dot"></span>Escritório Menezes · 38 ms · HD</div></div>`,
+set:`<div class="win A"><div class="bar"><div class="logo"><span>R</span>Configurações</div><div class="sp"></div><button class="ib">${I('x')}</button></div><div class="set">
+<div class="sc"><div class="row"><div>Idioma<small>Português é o padrão</small></div><div class="seg2"><span class="on">Português</span><span>English</span></div></div><div class="row"><div>Tema</div><div class="seg2"><span class="on">Claro</span><span>Escuro</span></div></div></div>
+<div class="sc"><div class="row"><div>Senha mestra<small>Funciona junto com a senha temporária</small></div>${T(1)}</div><div class="row"><div>Pedir aceite do cliente<small>Exibe aviso na tela do cliente</small></div>${T(0)}</div><div class="row"><div>Iniciar com o Windows</div>${T(1)}</div></div>
+<div class="sc"><div class="row"><div>Servidor<small>137.131.182.186</small></div><span style="color:#8a7d66">Alterar</span></div><div class="row"><div>Qualidade da imagem</div><div class="seg2"><span>Rápida</span><span class="on">Equilibrada</span><span>Nítida</span></div></div></div></div></div>`},
+B:{name:'B · Obsidiana',note:'Escuro, técnico e denso, estilo central de operações. Barra de ícones à esquerda, painel “Meu acesso” fixo e tabela de clientes recentes. Na sessão, a barra vertical fica colada na lateral e há seletor de monitores.',
+home:`<div class="win B"><div class="rail"><div class="lg">R</div><button class="on">${I('home')}</button><button>${I('users')}</button><button>${I('clock')}</button><span style="flex:1"></span><button>${I('gear')}</button></div>
+<div class="main"><div class="hd"><h2>Início</h2><small><span class="dot"></span>Serviço ativo · v1.5.3</small></div><div class="cols">
+<div class="pn"><div class="lbl">Meu acesso</div><div class="id mono">482 913 077</div><div class="nm">Computador do suporte</div>
+<div class="pwb"><div><div class="lbl" style="margin-bottom:4px">Senha temporária</div><b>k7Pm92</b></div><button class="btn gh">${I('copy')}</button></div>
+<div style="margin-top:16px;display:flex;gap:8px"><button class="btn gh" style="flex:1;justify-content:center">${I('refresh')}Nova senha</button></div>
+<button class="btn pri" style="margin-top:130px;width:100%;justify-content:center">${I('down')}Instalar no computador</button></div>
+<div class="pn"><div class="lbl">Conectar</div><div class="inp"><input placeholder="ID do computador remoto"><button class="btn pri">Conectar ${I('arrow')}</button></div>
+<table><tr><th>Cliente</th><th>ID</th><th>Último acesso</th></tr>${clients.map(c=>`<tr><td><span class="av">${c[0][0]}</span>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td></tr>`).join('')}</table></div></div></div></div>`,
+conn:`<div class="win B"><div class="rail"><div class="lg">R</div></div><div class="main"></div><div class="modal"><div class="dlg"><h3>Escolha o tipo de acesso</h3><p>Escritório Menezes · 175 330 204</p>
+<div class="two"><div class="opt on"><div class="ic">${I('key')}</div><b>Acesso direto</b><small>Usa a chave mestra. Entra sem o cliente aceitar.</small></div>
+<div class="opt"><div class="ic">${I('user')}</div><b>Aguardar o cliente</b><small>O cliente aceita no computador dele ou informa a senha.</small></div></div>
+<div class="warn">${I('shield')}Lembrete: avise o cliente antes de entrar direto.</div>
+<div style="display:flex;gap:10px;margin-top:16px"><button class="btn gh">${I('folder')}Criar atalho</button><span style="flex:1"></span><button class="btn gh">Cancelar</button><button class="btn pri">Entrar</button></div></div></div></div>`,
+sess:`<div class="win B">${desk}<div class="vt"><button class="on">${I('monitor')}</button><button>${I('kbd')}</button><button>${I('folder')}</button><button>${I('chat')}</button><button>${I('full')}</button><div class="hr"></div><button>${I('gear')}</button><button class="end">${I('x')}</button></div><div class="mon"><span class="m on">1</span><span class="m">2</span><span style="margin-left:6px;color:#9b917a">38 ms · HD</span></div></div>`,
+set:`<div class="win B"><div class="rail"><div class="lg">R</div><button>${I('home')}</button><button>${I('users')}</button><button>${I('clock')}</button><span style="flex:1"></span><button class="on">${I('gear')}</button></div><div class="main"><div class="hd"><h2>Configurações</h2></div><div class="st"><div class="cat"><div class="on">${I('gear')}Geral</div><div>${I('shield')}Segurança</div><div>${I('monitor')}Sessão remota</div><div>${I('globe')}Servidor</div><div>${I('bolt')}Avançado</div></div>
+<div class="body"><h3>Geral</h3><div class="sub">Idioma, tema e inicialização</div>
+<div class="row"><div>Idioma<small>Português é o padrão</small></div><div class="seg" style="background:#15130d"><button class="on">Português</button><button>English</button></div></div>
+<div class="row"><div>Tema escuro</div>${T(1)}</div><div class="row"><div>Iniciar com o Windows<small>Mantém o serviço sempre ativo</small></div>${T(1)}</div><div class="row"><div>Mostrar ícone na bandeja</div>${T(1)}</div></div></div></div></div>`},
+C:{name:'C · Mosaico',note:'Colorido e com personalidade, em blocos (estilo bento). Cada função é um cartão grande. Mantém a paleta bege e amarela do Realteq e destaca o ID em amarelo cheio. Na sessão, uma doca inferior com rótulos.',
+home:`<div class="win C"><div class="hd"><div class="logo">realteq<em>.</em>desk</div><div class="nav"><span class="on">Início</span><span>Clientes</span><span>Histórico</span><span>Ajustes</span></div></div>
+<div class="grid"><div class="t id"><div class="lbl">Seu ID</div><b class="mono">482 913 077</b><div style="font-size:13px;font-weight:600">${I('copy')} Toque para copiar</div></div>
+<div class="t pw"><div class="lbl">Senha temporária</div><b>k7Pm92</b></div>
+<div class="t cn"><div class="lbl">Conectar a um computador</div><div class="f"><input placeholder="ID remoto"><button class="go">Ir ${I('arrow')}</button></div></div>
+<div class="t hs"><div class="lbl">Clientes recentes</div>${clients.map(c=>`<div class="r"><div class="av">${c[0][0]}</div><b>${c[0]}</b><span>${c[2]}</span></div>`).join('')}</div>
+<div class="t in"><div class="lbl">Instalar</div><div style="font-weight:700;font-size:16px">Deixe o suporte sempre pronto</div></div>
+<div class="t sv"><div class="lbl">Serviço</div><div style="font-weight:700;font-size:18px">● Ativo</div></div></div></div>`,
+conn:`<div class="win C"><div class="hd"><div class="logo">realteq<em>.</em>desk</div></div><div class="modal"><div class="dlg"><h3>Como você quer entrar?</h3><p>Escritório Menezes · 175 330 204</p>
+<div class="big2"><div class="bc a"><div>${I('key')}</div><div><b>Acesso direto</b><small>Chave mestra. Sem esperar o cliente.</small></div></div><div class="bc b"><div>${I('user')}</div><div><b>Aguardar o cliente</b><small>O cliente aceita ou passa a senha.</small></div></div></div>
+<div class="nm"><input value="Escritório Menezes"><button class="go" style="padding:0 20px">Atalho</button></div></div></div></div>`,
+sess:`<div class="win C">${desk}<div class="info"><span class="dot"></span>Escritório Menezes · 38 ms</div><div class="dock"><button class="on">${I('monitor')}Tela 1</button><button>${I('monitor')}Tela 2</button><button>${I('kbd')}Teclado</button><button>${I('folder')}Arquivos</button><button>${I('chat')}Chat</button><button>${I('full')}Tela cheia</button><button class="end">${I('x')}Sair</button></div></div>`,
+set:`<div class="win C"><div class="hd"><div class="logo">ajustes<em>.</em></div><div class="nav"><span>Início</span><span>Clientes</span><span>Histórico</span><span class="on">Ajustes</span></div></div>
+<div class="sg"><div class="t hl"><h4>${I('globe')}Idioma e tema</h4><div class="r"><span>Português</span>${T(1)}</div><div class="r"><span>Tema escuro</span>${T(0)}</div></div>
+<div class="t"><h4>${I('shield')}Segurança</h4><div class="r"><span>Senha mestra</span>${T(1)}</div><div class="r"><span>Aviso ao cliente</span>${T(1)}</div><div class="r"><span>Pedir aceite sempre</span>${T(0)}</div></div>
+<div class="t"><h4>${I('monitor')}Sessão</h4><div class="r"><span>Qualidade</span><b>Equilibrada</b></div><div class="r"><span>Som</span>${T(1)}</div></div>
+<div class="t"><h4>${I('bolt')}Sistema</h4><div class="r"><span>Iniciar com o Windows</span>${T(1)}</div><div class="r"><span>Ícone na bandeja</span>${T(1)}</div></div>
+<div class="t"><h4>${I('globe')}Servidor</h4><div class="r"><span>137.131.182.186</span><b>Alterar</b></div></div>
+<div class="t"><h4>${I('down')}Instalação</h4><div class="r"><span>Versão 1.5.3</span><b>Atualizar</b></div></div></div></div>`}};
+let o='A',s='home';
+const scr={home:'Início',conn:'Conectar',sess:'Sessão',set:'Configurações'};
+function draw(){document.getElementById('optSeg').innerHTML=Object.keys(O).map(k=>`<button class="${k==o?'on':''}" onclick="o='${k}';draw()">${O[k].name}</button>`).join('');
+document.getElementById('scrSeg').innerHTML=Object.keys(scr).map(k=>`<button class="${k==s?'on':''}" onclick="s='${k}';draw()">${scr[k]}</button>`).join('');
+document.getElementById('note').textContent=O[o].note;document.getElementById('stage').innerHTML=O[o][s];}
+draw();
+</script></body></html>

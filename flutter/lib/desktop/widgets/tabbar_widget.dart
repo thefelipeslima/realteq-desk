@@ -651,16 +651,19 @@ class _DesktopTabState extends State<DesktopTab>
                         Offstage(
                             offstage: !showTitle,
                             child: const Text(
-                              "RustDesk",
-                              style: TextStyle(fontSize: 13),
-                            ).marginOnly(left: 2))
+                              "Realteq Desk",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w600),
+                            ).marginOnly(left: 6))
                       ]).marginOnly(
                         left: 5,
                         right: 10,
                       ),
                     ),
                     Expanded(
-                        child: Listener(
+                        child: controller.tabType == DesktopTabType.main
+                            ? const SizedBox()
+                            : Listener(
                             // handle mouse wheel
                             onPointerSignal: (e) {
                               if (e is PointerScrollEvent) {

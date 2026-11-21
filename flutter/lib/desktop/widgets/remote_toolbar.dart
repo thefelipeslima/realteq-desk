@@ -37,7 +37,7 @@ _ToolbarEdge _parseToolbarEdge(String? s) {
     case 'left':
       return _ToolbarEdge.left;
     default:
-      return _ToolbarEdge.top;
+      return _ToolbarEdge.left;
   }
 }
 
@@ -326,10 +326,10 @@ class ToolbarState {
 
 class _ToolbarTheme {
   static const Color blueColor = Color(0x00000000);
-  static const Color hoverBlueColor = Color(0x33FFFFFF);
+  static const Color hoverBlueColor = Color(0x33E6A800);
   static Color inactiveColor = const Color(0x1AFFFFFF);
   static Color hoverInactiveColor = const Color(0x33FFFFFF);
-  static const Color barColor = Color(0xFF26231D);
+  static const Color barColor = Color(0xFF201D15);
   static const Map<String, String> labels = {
     'Select Monitor': 'Monitor',
     'Control Actions': 'Controle',
@@ -366,19 +366,18 @@ class _ToolbarTheme {
   static const double buttonSize = 32;
   static const double buttonHMargin = 2;
   static const double buttonVMargin = 6;
-  static const double iconRadius = 10;
+  static const double iconRadius = 12;
   static const double elevation = 3;
 
   static double dividerSpaceToAction = isWindows ? 8 : 14;
 
-  static double menuBorderRadius = 14.0;
+  static double menuBorderRadius = 16.0;
   static EdgeInsets menuPadding = isWindows
       ? EdgeInsets.fromLTRB(4, 12, 4, 12)
       : EdgeInsets.fromLTRB(6, 14, 6, 14);
   static const double menuButtonBorderRadius = 10.0;
 
-  static Color borderColor(BuildContext context) =>
-      MyTheme.color(context).border3 ?? MyTheme.border;
+  static Color borderColor(BuildContext context) => const Color(0xFF3A3425);
 
   static Color? dividerColor(BuildContext context) =>
       MyTheme.color(context).divider;
@@ -492,7 +491,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
   late Debouncer<int> _debouncerHide;
   bool _isCursorOverImage = false;
   final _fraction = 0.5.obs;
-  final _edge = _ToolbarEdge.top.obs;
+  final _edge = _ToolbarEdge.left.obs;
   final _dragging = false.obs;
   // Live drag preview: where the toolbar would dock if the user dropped now.
   final _previewEdge = Rxn<_ToolbarEdge>();
@@ -881,7 +880,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
     }
     // recording hidden
     toolbarItems.add(_CloseMenu(id: widget.id, ffi: widget.ffi));
-    final toolbarBorderRadius = BorderRadius.all(Radius.circular(14.0));
+    final toolbarBorderRadius = BorderRadius.all(Radius.circular(22.0));
     // innerAxis: how the toolbar icons themselves flow.
     // outerAxis: how the toolbar block and the handle stack against each other
     // (perpendicular to the dock edge, so the handle hangs off the interior face).

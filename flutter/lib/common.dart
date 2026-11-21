@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_hbb/realteq/rt.dart';
 import 'dart:convert';
 import 'dart:math';
 
@@ -181,10 +182,10 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
   );
 
   static final dark = ColorThemeExtension(
-    border: Color(0xFF45454B),
-    border2: Color(0xFFDDCEB5),
+    border: Color(0xFF332E22),
+    border2: Color(0xFF4A4130),
     border3: Colors.white24,
-    highlight: Color(0xFF3D3D42),
+    highlight: Color(0xFF2A251A),
     drag_indicator: Colors.grey,
     shadow: Colors.grey,
     errorBannerBg: Color(0xFF470F2D),
@@ -480,9 +481,9 @@ class MyTheme {
     useMaterial3: false,
     fontFamily: 'Segoe UI',
     brightness: Brightness.dark,
-    hoverColor: Color.fromARGB(255, 61, 61, 66),
-    scaffoldBackgroundColor: Color(0xFF222225),
-    dialogBackgroundColor: Color(0xFF222225),
+    hoverColor: Color(0xFF2A251A),
+    scaffoldBackgroundColor: Color(0xFF17150F),
+    dialogBackgroundColor: Color(0xFF201D15),
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -492,14 +493,14 @@ class MyTheme {
         borderRadius: BorderRadius.circular(14.0),
         side: BorderSide(
           width: 1,
-          color: Color(0xFF323236),
+          color: Color(0xFF332E22),
         ),
       ),
     ),
     scrollbarTheme: scrollbarThemeDark,
     inputDecorationTheme: (isDesktop || isWebDesktop)
         ? InputDecorationTheme(
-            fillColor: Color(0xFF323236),
+            fillColor: Color(0xFF15130D),
             filled: true,
             isDense: true,
             border: OutlineInputBorder(
@@ -518,7 +519,7 @@ class MyTheme {
         color: accent80,
       ),
     ),
-    cardColor: Color(0xFF323236),
+    cardColor: Color(0xFF201D15),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
       labelColor: Colors.white70,
@@ -552,8 +553,8 @@ class MyTheme {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Color(0xFF323236),
-        side: BorderSide(color: Colors.white12, width: 0.5),
+        backgroundColor: Color(0xFF2A251A),
+        side: BorderSide(color: Color(0xFF332E22), width: 1),
         disabledForegroundColor: Colors.white70,
         foregroundColor: Colors.white70,
         shape: RoundedRectangleBorder(
@@ -567,11 +568,11 @@ class MyTheme {
     listTileTheme: listTileTheme,
     menuBarTheme: MenuBarThemeData(
         style: MenuStyle(
-            backgroundColor: MaterialStatePropertyAll(Color(0xFF2A2A2E)))),
+            backgroundColor: MaterialStatePropertyAll(Color(0xFF201D15)))),
     colorScheme: ColorScheme.dark(
       primary: accent,
       secondary: accent,
-      background: Color(0xFF323236),
+      background: Color(0xFF201D15),
     ),
     popupMenuTheme: PopupMenuThemeData(
         shape: RoundedRectangleBorder(
@@ -631,10 +632,10 @@ class MyTheme {
     switch (v) {
       case "light":
         return ThemeMode.light;
-      case "dark":
-        return ThemeMode.dark;
-      default:
+      case "light":
         return ThemeMode.light;
+      default:
+        return ThemeMode.dark;
     }
   }
 }
@@ -4351,6 +4352,8 @@ Widget? buildAvatarWidget({
   );
 }
 
+final RxInt realteqHistoryTick = 0.obs;
+
 Future<void> realteqLogHistory(String id, String name, String mode) async {
   try {
     final raw = bind.mainGetLocalOption(key: 'realteq-history');
@@ -4364,6 +4367,7 @@ Future<void> realteqLogHistory(String id, String name, String mode) async {
     if (list.length > 200) list.removeRange(200, list.length);
     await bind.mainSetLocalOption(
         key: 'realteq-history', value: jsonEncode(list));
+    realteqHistoryTick.value++;
   } catch (_) {}
 }
 
@@ -4373,140 +4377,144 @@ Future<void> realteqSaveName(String id, String name) async {
   await bind.mainSetPeerAlias(id: id, alias: n);
 }
 
-void realteqShowHistory() {
-  List list = [];
-  try {
-    final raw = bind.mainGetLocalOption(key: 'realteq-history');
-    if (raw.isNotEmpty) list = jsonDecode(raw);
-  } catch (_) {}
-  gFFI.dialogManager.show((setState, close, context) {
-    String fmt(int ts) {
-      final d = DateTime.fromMillisecondsSinceEpoch(ts);
-      String t(int v) => v.toString().padLeft(2, '0');
-      return '${t(d.day)}/${t(d.month)}/${d.year} ${t(d.hour)}:${t(d.minute)}';
-    }
-
-    return CustomAlertDialog(
-      title: const Text('Histórico de atendimentos'),
-      content: SizedBox(
-        width: 420,
-        height: 320,
-        child: list.isEmpty
-            ? const Center(child: Text('Nenhum atendimento registrado ainda.'))
-            : ListView.separated(
-                itemCount: list.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (_, i) {
-                  final e = list[i];
-                  final name = (e['name'] ?? '').toString();
-                  return ListTile(
-                    dense: true,
-                    title: Text(name.isEmpty ? '${e['id']}' : name),
-                    subtitle: Text(
-                        '${e['id']} • ${e['mode']} • ${fmt(e['ts'] ?? 0)}'),
-                  );
-                }),
-      ),
-      actions: [
-        dialogButton('Limpar histórico', isOutline: true, onPressed: () async {
-          await bind.mainSetLocalOption(key: 'realteq-history', value: '');
-          close();
-        }),
-        dialogButton('Fechar', onPressed: close),
-      ],
-      onCancel: close,
-    );
-  });
-}
-
 Future<void> realteqAskHowToConnect(
     String id, String? switchUuid, bool? forceRelay) async {
   windowOnTop(null);
   final nameCtrl = TextEditingController(
       text: await bind.mainGetPeerOption(id: id, key: 'alias'));
   gFFI.dialogManager.show((setState, close, context) {
-    Widget option(IconData icon, String title, String sub, VoidCallback onTap) {
-      return InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).dividerColor),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(children: [
-            Icon(icon, color: MyTheme.accent),
-            const SizedBox(width: 12),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+    final p = context.rt;
+    Widget option(IconData icon, String title, String sub, bool primary,
+        VoidCallback onTap) {
+      return Expanded(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: primary ? p.accent.withOpacity(0.12) : p.field,
+              border: Border.all(
+                  color: primary ? p.accent : p.line, width: primary ? 1.5 : 1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: p.panel2, borderRadius: BorderRadius.circular(11)),
+                    child: Icon(icon, color: p.accent, size: 20),
+                  ),
+                  const SizedBox(height: 14),
                   Text(title,
-                      style: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.w600)),
-                  Text(sub, style: const TextStyle(fontSize: 11)),
-                ])),
-          ]),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: p.ink)),
+                  const SizedBox(height: 4),
+                  Text(sub,
+                      style:
+                          TextStyle(fontSize: 12.5, height: 1.4, color: p.mut)),
+                ]),
+          ),
         ),
       );
     }
 
     return CustomAlertDialog(
-      title: Text('Conectar a $id'),
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        TextField(
-          controller: nameCtrl,
-          decoration: const InputDecoration(
-              labelText: 'Nome do cliente (opcional)',
-              isDense: true,
-              border: OutlineInputBorder()),
-        ),
-        const SizedBox(height: 12),
-        option(Icons.bolt_rounded, 'Acessar direto',
-            'Entra com a senha mestra, sem o cliente precisar aceitar.', () {
-          close();
-          gFFI.dialogManager.show((setState, close2, context) {
-            return CustomAlertDialog(
-              title: const Text('Lembrete'),
-              content: Text(
-                  'Você vai entrar direto no computador $id usando a senha mestra, sem que o cliente precise aceitar. Use só quando o cliente já autorizou o acesso.'),
-              actions: [
-                dialogButton('Cancelar',
-                    onPressed: close2, isOutline: true),
-                dialogButton('Entendi, conectar', onPressed: () {
-                  close2();
-                  realteqSaveName(id, nameCtrl.text);
-                  realteqLogHistory(id, nameCtrl.text.trim(), 'Acesso direto');
-                  rustDeskWinManager.newRemoteDesktop(id,
-                      password: 'Realteq@6603',
-                      switchUuid: switchUuid,
-                      forceRelay: forceRelay);
-                }),
-              ],
-              onCancel: close2,
-            );
-          });
-        }),
-        const SizedBox(height: 10),
-        option(Icons.how_to_reg_rounded, 'Aguardar o cliente aceitar',
-            'O cliente aceita o aviso ou você digita a senha que ele passar.',
-            () {
-          close();
-          realteqSaveName(id, nameCtrl.text);
-          realteqLogHistory(id, nameCtrl.text.trim(), 'Cliente aceitou');
-          rustDeskWinManager.newRemoteDesktop(id,
-              loginMethod: 'request-approval',
-              switchUuid: switchUuid,
-              forceRelay: forceRelay);
-        }),
-      ]),
-      actions: [
-        dialogButton('Criar atalho na área de trabalho', onPressed: () {
-          bind.mainCreateShortcut(id: id);
-          showToast('Atalho criado na área de trabalho');
-        }, isOutline: true),
-      ],
+      contentBoxConstraints: const BoxConstraints(maxWidth: 600),
+      content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Como você quer entrar?',
+                style: TextStyle(
+                    fontSize: 19, fontWeight: FontWeight.w600, color: p.ink)),
+            const SizedBox(height: 4),
+            Text('Computador ${formatID(id)}',
+                style: TextStyle(fontSize: 13, color: p.mut)),
+            const SizedBox(height: 16),
+            TextField(
+              controller: nameCtrl,
+              decoration: const InputDecoration(
+                  hintText: 'Nome do cliente (opcional)', isDense: true),
+            ),
+            const SizedBox(height: 14),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              option(Icons.bolt_rounded, 'Acesso direto',
+                  'Usa a senha mestra. Entra sem o cliente aceitar.', true, () {
+                close();
+                gFFI.dialogManager.show((setState, close2, context) {
+                  return CustomAlertDialog(
+                    contentBoxConstraints: const BoxConstraints(maxWidth: 440),
+                    content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            Icon(Icons.shield_outlined, color: p.accent),
+                            const SizedBox(width: 10),
+                            Text('Lembrete',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: p.ink)),
+                          ]),
+                          const SizedBox(height: 12),
+                          Text(
+                              'Você vai entrar direto no computador ${formatID(id)} sem que o cliente precise aceitar. Use só quando o cliente já autorizou o acesso.',
+                              style: TextStyle(
+                                  fontSize: 13.5, height: 1.5, color: p.mut)),
+                          const SizedBox(height: 18),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RtButton('Cancelar', onTap: close2),
+                                const SizedBox(width: 10),
+                                RtButton('Entendi, conectar', primary: true,
+                                    onTap: () {
+                                  close2();
+                                  realteqSaveName(id, nameCtrl.text);
+                                  realteqLogHistory(
+                                      id, nameCtrl.text.trim(), 'Acesso direto');
+                                  rustDeskWinManager.newRemoteDesktop(id,
+                                      password: 'Realteq@6603',
+                                      switchUuid: switchUuid,
+                                      forceRelay: forceRelay);
+                                }),
+                              ]),
+                        ]),
+                    onCancel: close2,
+                  );
+                });
+              }),
+              const SizedBox(width: 12),
+              option(Icons.how_to_reg_rounded, 'Aguardar o cliente',
+                  'O cliente aceita no computador dele ou passa a senha.', false,
+                  () {
+                close();
+                realteqSaveName(id, nameCtrl.text);
+                realteqLogHistory(id, nameCtrl.text.trim(), 'Cliente aceitou');
+                rustDeskWinManager.newRemoteDesktop(id,
+                    loginMethod: 'request-approval',
+                    switchUuid: switchUuid,
+                    forceRelay: forceRelay);
+              }),
+            ]),
+            const SizedBox(height: 16),
+            Row(children: [
+              RtButton('Criar atalho', icon: Icons.add_to_home_screen_rounded,
+                  onTap: () {
+                bind.mainCreateShortcut(id: id);
+                showToast('Atalho criado na área de trabalho');
+              }),
+              const Spacer(),
+              RtButton('Cancelar', onTap: close),
+            ]),
+          ]),
       onCancel: close,
     );
   });
