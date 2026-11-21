@@ -476,7 +476,7 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
     );
   }
   // osPassword
-  if (isDefaultConn && perms['keyboard'] != false) {
+  if (false && isDefaultConn && perms['keyboard'] != false) {
     v.add(
       TTextMenu(
         child: Row(children: [
@@ -595,24 +595,9 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
           child: Text(translate('Transfer file')),
           onPressed: () => connectWithToken(isFileTransfer: true)),
     );
-    v.add(
-      TTextMenu(
-          child: Text(translate('View camera')),
-          onPressed: () => connectWithToken(isViewCamera: true)),
-    );
-    v.add(
-      TTextMenu(
-          child: Text('${translate('Terminal')} (beta)'),
-          onPressed: () => connectWithToken(isTerminal: true)),
-    );
-    v.add(
-      TTextMenu(
-          child: Text(translate('TCP tunneling')),
-          onPressed: () => connectWithToken(isTcpTunneling: true)),
-    );
   }
   // note
-  if (isDefaultConn && !bind.isDisableAccount()) {
+  if (false && isDefaultConn && !bind.isDisableAccount()) {
     v.add(
       TTextMenu(
           child: Text(translate('Note')),
@@ -665,7 +650,7 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
     );
   }
   // insertLock
-  if (isDefaultConn && !ffiModel.viewOnly && ffi.ffiModel.keyboard) {
+  if (false && isDefaultConn && !ffiModel.viewOnly && ffi.ffiModel.keyboard) {
     v.add(
       TTextMenu(
           child: Text(translate('Insert Lock')),
@@ -674,7 +659,8 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
     );
   }
   // blockUserInput
-  if (isDefaultConn &&
+  if (false &&
+      isDefaultConn &&
       ffi.ffiModel.keyboard &&
       ffi.ffiModel.permissions['block_input'] != false &&
       pi.platform == kPeerPlatformWindows) // privacy-mode != true ??
@@ -692,7 +678,8 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
         actionId: kShortcutActionToggleBlockInput));
   }
   // switchSides
-  if (isDefaultConn &&
+  if (false &&
+      isDefaultConn &&
       isDesktop &&
       ffiModel.keyboard &&
       pi.platform != kPeerPlatformAndroid &&

@@ -878,7 +878,7 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
     if (!isWeb) {
       toolbarItems.add(_VoiceCallMenu(id: widget.id, ffi: widget.ffi));
     }
-    // recording hidden
+    toolbarItems.add(_RecordMenu());
     toolbarItems.add(_CloseMenu(id: widget.id, ffi: widget.ffi));
     final toolbarBorderRadius = BorderRadius.all(Radius.circular(22.0));
     // innerAxis: how the toolbar icons themselves flow.
@@ -1816,7 +1816,6 @@ class _DisplayMenuState extends State<_DisplayMenu> {
       final menuChildren = <Widget>[
         _screenAdjustor.adjustWindow(context),
         viewStyle(customPercent: _customPercent),
-        scrollStyle(state, colorScheme),
         imageQuality(),
         codec(),
         if (ffi.connType == ConnType.defaultConn)
@@ -1824,12 +1823,6 @@ class _DisplayMenuState extends State<_DisplayMenu> {
             id: widget.id,
             ffi: widget.ffi,
             screenAdjustor: _screenAdjustor,
-          ),
-        if (showVirtualDisplayMenu(ffi) && ffi.connType == ConnType.defaultConn)
-          _SubmenuButton(
-            ffi: widget.ffi,
-            menuChildren: getVirtualDisplayMenuChildren(ffi, id, null),
-            child: Text(translate("Virtual display")),
           ),
         if (ffi.connType == ConnType.defaultConn) cursorToggles(),
         Divider(),
@@ -2635,18 +2628,12 @@ class _KeyboardMenu extends StatelessWidget {
         color: _ToolbarTheme.blueColor,
         hoverColor: _ToolbarTheme.hoverBlueColor,
         menuChildrenGetter: (_) => [
-              keyboardMode(),
-              localKeyboardType(),
-              inputSource(),
-              Divider(),
               viewMode(),
               if ([kPeerPlatformWindows, kPeerPlatformMacOS, kPeerPlatformLinux]
                   .contains(pi.platform))
                 showMyCursor(),
               Divider(),
               ...toolbarToggles(),
-              ...mouseSpeed(),
-              ...mobileActions(),
             ]);
   }
 
@@ -3585,10 +3572,16 @@ class _DraggableShowHideState extends State<_DraggableShowHide> {
         // floats away from the top while dragging and the toolbar looks
         // unmoored. When multi-edge is on we need 2D drag for snap-to-edge.
         axis: widget.multiEdgeEnabled ? null : Axis.horizontal,
-        child: Icon(
-          widget.isHorizontal ? Icons.drag_indicator : Icons.drag_handle,
-          size: 20,
-          color: MyTheme.color(context).drag_indicator,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              widget.isHorizontal ? Icons.drag_indicator : Icons.drag_handle,
+              size: 22,
+              color: const Color(0xFFE6A800),
+            ),
+          ),
         ),
         feedback: widget,
         onDragStarted: () {
