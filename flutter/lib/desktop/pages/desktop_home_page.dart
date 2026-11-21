@@ -27,7 +27,7 @@ class DesktopHomePage extends StatefulWidget {
 const borderColor = Color(0xFFA8967A);
 
 class _DesktopHomePageState extends State<DesktopHomePage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, WindowListener {
   @override
   bool get wantKeepAlive => true;
   var systemError = '';
@@ -117,6 +117,17 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       bind.mainSetLocalOption(key: 'realteq-dock-init', value: 'Y');
     }
     _updateTimer = periodic_immediate(const Duration(seconds: 1), () async {
+      try {
+        final st = jsonDecode(await bind.mainGetConnectStatus())
+            as Map<String, dynamic>;
+        final n = st['status_num'] as int;
+        stateGlobal.svcStatus.value = n == 0
+            ? SvcStatus.connecting
+            : (n == 1 ? SvcStatus.ready : SvcStatus.notReady);
+        try {
+          stateGlobal.videoConnCount.value = st['video_conn_count'] as int;
+        } catch (_) {}
+      } catch (_) {}
       await gFFI.serverModel.fetchID();
       final error = await bind.mainGetError();
       if (systemError != error) {
@@ -271,6 +282,44 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       });
     }
     WidgetsBinding.instance.addObserver(this);
+    windowManager.addListener(this);
+    if (bind.mainGetLocalOption(key: 'realteq-theme-init') != 'Y') {
+      MyTheme.changeDarkMode(ThemeMode.dark);
+      bind.mainSetLocalOption(key: 'realteq-theme-init', value: 'Y');
+    }
+  }
+
+  bool _minimized = false;
+
+  @override
+  void onWindowEvent(String eventName) {
+    super.onWindowEvent(eventName);
+    if (eventName == 'minimize') {
+      _minimized = true;
+    } else if (eventName == 'maximize' || eventName == 'restore') {
+      if (_minimized && isWindows) {
+        Get.forceAppUpdate();
+      }
+      _minimized = false;
+    }
+  }
+
+  @override
+  void onWindowEnterFullScreen() {
+    stateGlobal.resizeEdgeSize.value = 0;
+  }
+
+  @override
+  void onWindowLeaveFullScreen() {
+    stateGlobal.resizeEdgeSize.value = stateGlobal.isMaximized.isTrue
+        ? kMaximizeEdgeSize
+        : windowResizeEdgeSize;
+  }
+
+  @override
+  void onWindowClose() {
+    super.onWindowClose();
+    bind.mainOnMainWindowClose();
   }
 
   _updateWindowSize() {
@@ -293,6 +342,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     Get.delete<RxBool>(tag: 'stop-service');
     _updateTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    windowManager.removeListener(this);
     super.dispose();
   }
 
