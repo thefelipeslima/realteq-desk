@@ -1,6 +1,7 @@
 // original cm window in Sciter version.
 
 import 'dart:async';
+import 'package:flutter_hbb/realteq/rt.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -457,15 +458,9 @@ class _CmHeaderState extends State<_CmHeader>
     super.build(context);
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color(0xff00bfe1),
-            Color(0xff0071ff),
-          ],
-        ),
+        borderRadius: BorderRadius.circular(16.0),
+        color: context.rt.panel,
+        border: Border.all(color: context.rt.line),
       ),
       margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
       padding: EdgeInsets.only(
@@ -487,7 +482,7 @@ class _CmHeaderState extends State<_CmHeader>
                     child: Text(
                   client.name,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.rt.ink,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                     overflow: TextOverflow.ellipsis,
@@ -497,35 +492,35 @@ class _CmHeaderState extends State<_CmHeader>
                 FittedBox(
                   child: Text(
                     "(${client.peerId})",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: TextStyle(color: context.rt.ink, fontSize: 14),
                   ),
                 ),
                 if (client.type_() == ClientType.terminal)
                   FittedBox(
                     child: Text(
                       translate("Terminal"),
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                      style: TextStyle(color: context.rt.mut, fontSize: 12),
                     ),
                   ),
                 if (client.type_() == ClientType.file)
                   FittedBox(
                     child: Text(
                       translate("Transfer file"),
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                      style: TextStyle(color: context.rt.mut, fontSize: 12),
                     ),
                   ),
                 if (client.type_() == ClientType.camera)
                   FittedBox(
                     child: Text(
                       translate("View camera"),
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                      style: TextStyle(color: context.rt.mut, fontSize: 12),
                     ),
                   ),
                 if (client.portForward.isNotEmpty)
                   FittedBox(
                     child: Text(
                       "Port Forward: ${client.portForward}",
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                      style: TextStyle(color: context.rt.mut, fontSize: 12),
                     ),
                   ),
                 SizedBox(height: 10.0),
@@ -538,7 +533,7 @@ class _CmHeaderState extends State<_CmHeader>
                               ? translate("Disconnected")
                               : translate("Connected")
                           : "${translate("Request access to your device")}...",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: context.rt.ink),
                     ).marginOnly(right: 8.0),
                     if (client.authorized)
                       Obx(
@@ -546,7 +541,7 @@ class _CmHeaderState extends State<_CmHeader>
                           formatDurationToTime(
                             Duration(seconds: _time.value),
                           ),
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: context.rt.ink),
                         ),
                       )
                   ],
@@ -598,14 +593,14 @@ class _CmHeaderState extends State<_CmHeader>
       height: 70,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: str2color(client.name),
+        color: context.rt.accent,
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Text(
         client.name.isNotEmpty ? client.name[0] : '?',
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: context.rt.accentInk,
           fontSize: 55,
         ),
       ),
@@ -984,11 +979,11 @@ class _CmControlPanel extends StatelessWidget {
                     onClick: () => handleVoiceCall(true),
                     icon: Icon(
                       Icons.call_rounded,
-                      color: Colors.white,
+                      color: Color(0xFF241B00),
                       size: 14,
                     ),
                     text: "Accept",
-                    textColor: Colors.white),
+                    textColor: Color(0xFF241B00)),
               ),
               Expanded(
                 child: buildButton(
@@ -1027,11 +1022,11 @@ class _CmControlPanel extends StatelessWidget {
             },
             icon: Icon(
               Icons.security_rounded,
-              color: Colors.white,
+              color: Color(0xFF241B00),
               size: 14,
             ),
             text: 'Elevate',
-            textColor: Colors.white,
+            textColor: Color(0xFF241B00),
           ),
         ),
         Row(
@@ -1063,7 +1058,7 @@ class _CmControlPanel extends StatelessWidget {
                 color: MyTheme.accent,
                 onClick: handleClose,
                 text: 'Close',
-                textColor: Colors.white)),
+                textColor: Color(0xFF241B00))),
       ],
     ).marginOnly(bottom: buttonBottomMargin);
   }
@@ -1112,7 +1107,7 @@ class _CmControlPanel extends StatelessWidget {
                         windowManager.minimize();
                       },
                       text: 'Accept',
-                      textColor: Colors.white,
+                      textColor: Color(0xFF241B00),
                     ),
                   ],
                 ),
@@ -1147,21 +1142,26 @@ class _CmControlPanel extends StatelessWidget {
     if (icon != null) {
       textWidget = Text(
         translate(text),
-        style: TextStyle(color: textColor),
+        style: TextStyle(
+            color: color == MyTheme.accent ? const Color(0xFF241B00) : textColor,
+            fontWeight: FontWeight.w600),
         textAlign: TextAlign.center,
       );
     } else {
       textWidget = Expanded(
         child: Text(
           translate(text),
-          style: TextStyle(color: textColor),
+          style: TextStyle(
+              color:
+                  color == MyTheme.accent ? const Color(0xFF241B00) : textColor,
+              fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
       );
     }
-    final borderRadius = BorderRadius.circular(10.0);
+    final borderRadius = BorderRadius.circular(12.0);
     final btn = Container(
-      height: 28,
+      height: 36,
       decoration: BoxDecoration(
           color: color, borderRadius: borderRadius, border: border),
       child: InkWell(

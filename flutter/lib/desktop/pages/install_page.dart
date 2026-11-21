@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_hbb/realteq/rt.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -164,7 +165,8 @@ class _InstallPageBodyState extends State<_InstallPageBody>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(translate('Installation'),
-                  style: Theme.of(context).textTheme.headlineMedium),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w600, color: context.rt.ink)),
               Table(
                 columnWidths: const {
                   0: IntrinsicColumnWidth(),
@@ -215,11 +217,9 @@ class _InstallPageBodyState extends State<_InstallPageBody>
               Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDarkTheme
-                        ? Color.fromARGB(135, 87, 87, 90)
-                        : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey),
+                    color: context.rt.panel,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: context.rt.line),
                   ),
                   child: Row(
                     children: [
