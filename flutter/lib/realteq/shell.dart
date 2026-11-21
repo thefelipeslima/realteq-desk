@@ -18,6 +18,17 @@ import 'package:provider/provider.dart';
 /// 0 = Início, 1 = Clientes, 2 = Configurações.
 final RxInt realteqNav = 0.obs;
 final RxInt realteqSettingsTab = 0.obs;
+final RxBool realteqSettingsUnlocked = false.obs;
+const String _kAdminPassword = 'rt6603';
+bool _realteqWired = false;
+
+void _realteqWire() {
+  if (_realteqWired) return;
+  _realteqWired = true;
+  ever<int>(realteqNav, (v) {
+    if (v != 2) realteqSettingsUnlocked.value = false;
+  });
+}
 
 void realteqOpenSettings({int tab = 0}) {
   realteqSettingsTab.value = tab;
@@ -96,28 +107,36 @@ class RealteqShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.rt;
-    return Container(
-      color: p.bg,
-      child: Row(children: [
-        _Rail(),
-        Expanded(
-          child: Obx(() {
-            final nav = realteqNav.value;
-            return Column(children: [
-              _Header(nav),
-              if (statusStrip != null) statusStrip!,
-              Expanded(
-                child: IndexedStack(index: nav, children: [
-                  _HomeView(onInstall: onInstall),
-                  const _ClientsView(),
-                  const _SettingsView(),
-                ]),
-              ),
-            ]);
-          }),
-        ),
-      ]),
+    _realteqWire();
+    Theme.of(context);
+    final dark = MyTheme.currentThemeMode() == ThemeMode.dark;
+    return RtScope(
+      dark: dark,
+      child: Builder(builder: (context) {
+        final p = context.rt;
+        return Container(
+          color: p.bg,
+          child: Row(children: [
+            _Rail(),
+            Expanded(
+              child: Obx(() {
+                final nav = realteqNav.value;
+                return Column(children: [
+                  _Header(nav),
+                  if (statusStrip != null) statusStrip!,
+                  Expanded(
+                    child: IndexedStack(index: nav, children: [
+                      _HomeView(onInstall: onInstall),
+                      const _ClientsView(),
+                      const _SettingsView(),
+                    ]),
+                  ),
+                ]);
+              }),
+            ),
+          ]),
+        );
+      }),
     );
   }
 }
@@ -150,24 +169,51 @@ class _Rail extends StatelessWidget {
           color: p.rail, border: Border(right: BorderSide(color: p.line))),
       padding: const EdgeInsets.symmetric(vertical: 14),
       child: Column(children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-              color: p.accent, borderRadius: BorderRadius.circular(11)),
-          alignment: Alignment.center,
-          child: Text('R',
-              style: TextStyle(
-                  color: p.accentInk,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17)),
-        ),
+        Image.asset('assets/realteq-crown.png',
+            width: 44, filterQuality: FilterQuality.high),
         const SizedBox(height: 16),
         item(Icons.home_rounded, 'Início', 0),
         item(Icons.groups_rounded, 'Clientes', 1),
         const Spacer(),
+        const _ThemeToggle(),
+        const SizedBox(height: 6),
         item(Icons.tune_rounded, 'Configurações', 2),
       ]),
+    );
+  }
+}
+
+class _ThemeToggle extends StatelessWidget {
+  const _ThemeToggle();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.rt;
+    final dark = MyTheme.currentThemeMode() == ThemeMode.dark;
+    return Tooltip(
+      message: dark ? 'Modo claro' : 'Modo escuro',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () =>
+            MyTheme.changeDarkMode(dark ? ThemeMode.light : ThemeMode.dark),
+        child: SizedBox(
+          width: 44,
+          height: 40,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 450),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.easeInOut,
+            transitionBuilder: (child, anim) =>
+                FadeTransition(opacity: anim, child: child),
+            child: Icon(
+              dark ? Icons.nightlight_round : Icons.wb_sunny_rounded,
+              key: ValueKey(dark),
+              size: 22,
+              color: p.accent,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -549,6 +595,108 @@ class _ClientsViewState extends State<_ClientsView> {
 
 class _SettingsView extends StatelessWidget {
   const _SettingsView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => realteqSettingsUnlocked.value
+        ? const _SettingsBody()
+        : const _SettingsGate());
+  }
+}
+
+class _SettingsGate extends StatefulWidget {
+  const _SettingsGate();
+
+  @override
+  State<_SettingsGate> createState() => _SettingsGateState();
+}
+
+class _SettingsGateState extends State<_SettingsGate> {
+  final _ctrl = TextEditingController();
+  bool _wrong = false;
+
+  void _submit() {
+    if (_ctrl.text.trim() == _kAdminPassword) {
+      realteqSettingsUnlocked.value = true;
+    } else {
+      setState(() => _wrong = true);
+      _ctrl.clear();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.rt;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: RtPanel(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                  color: p.panel2, borderRadius: BorderRadius.circular(16)),
+              child: Icon(Icons.lock_rounded, color: p.accent, size: 24),
+            ),
+            const SizedBox(height: 16),
+            Text('Configurações protegidas',
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w600, color: p.ink)),
+            const SizedBox(height: 6),
+            Text('Só o administrador pode alterar as configurações.\nDigite a senha para continuar.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13, height: 1.5, color: p.mut)),
+            const SizedBox(height: 18),
+            TextField(
+              controller: _ctrl,
+              obscureText: true,
+              autofocus: true,
+              onChanged: (_) {
+                if (_wrong) setState(() => _wrong = false);
+              },
+              onSubmitted: (_) => _submit(),
+              style: TextStyle(color: p.ink),
+              decoration: InputDecoration(
+                hintText: 'Senha do administrador',
+                hintStyle: TextStyle(color: p.mut),
+                errorText: _wrong ? 'Senha incorreta' : null,
+                filled: true,
+                fillColor: p.field,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: p.line)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: p.line)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: p.accent, width: 1.5)),
+              ),
+            ),
+            const SizedBox(height: 14),
+            RtButton('Entrar',
+                icon: Icons.lock_open_rounded,
+                primary: true,
+                expand: true,
+                onTap: _submit),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsBody extends StatelessWidget {
+  const _SettingsBody();
 
   @override
   Widget build(BuildContext context) {

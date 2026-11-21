@@ -8,4 +8,4 @@ Regra: só enviar ao GitHub e compilar quando o usuário der o OK. Antes de envi
 - Fechar/minimizar a janela principal volta a chamar mainOnMainWindowClose.
 
 ## A fazer (conforme o usuário for pedindo)
-- (aguardando a análise do usuário)
+- Arrastar a janela, sol/lua, senha das configurações (rt6603), coroa no menu: feitos.

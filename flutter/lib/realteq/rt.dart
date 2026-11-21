@@ -37,8 +37,80 @@ class RtPalette {
       Color(0xFF2F9E66),
       Color(0xFFD6402B));
 
-  static RtPalette of(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? dark : light;
+  static RtPalette lerp(RtPalette a, RtPalette b, double t) {
+    Color c(Color x, Color y) => Color.lerp(x, y, t)!;
+    return RtPalette._(
+        c(a.bg, b.bg),
+        c(a.rail, b.rail),
+        c(a.panel, b.panel),
+        c(a.panel2, b.panel2),
+        c(a.field, b.field),
+        c(a.line, b.line),
+        c(a.ink, b.ink),
+        c(a.mut, b.mut),
+        c(a.accent, b.accent),
+        c(a.accentInk, b.accentInk),
+        c(a.ok, b.ok),
+        c(a.danger, b.danger));
+  }
+
+  static RtPalette of(BuildContext context) {
+    final scoped =
+        context.dependOnInheritedWidgetOfExactType<_RtInherited>()?.palette;
+    if (scoped != null) return scoped;
+    return Theme.of(context).brightness == Brightness.dark ? dark : light;
+  }
+}
+
+class _RtInherited extends InheritedWidget {
+  final RtPalette palette;
+  const _RtInherited({required this.palette, required Widget child})
+      : super(child: child);
+
+  @override
+  bool updateShouldNotify(_RtInherited old) => palette != old.palette;
+}
+
+/// Anima as cores entre escuro e claro, para a troca de tema ser suave.
+class RtScope extends StatefulWidget {
+  final bool dark;
+  final Widget child;
+  const RtScope({Key? key, required this.dark, required this.child})
+      : super(key: key);
+
+  @override
+  State<RtScope> createState() => _RtScopeState();
+}
+
+class _RtScopeState extends State<RtScope> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+      value: widget.dark ? 0 : 1);
+
+  @override
+  void didUpdateWidget(RtScope old) {
+    super.didUpdateWidget(old);
+    if (old.dark != widget.dark) _c.animateTo(widget.dark ? 0 : 1,
+        curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      child: widget.child,
+      builder: (_, child) => _RtInherited(
+          palette: RtPalette.lerp(RtPalette.dark, RtPalette.light, _c.value),
+          child: child!),
+    );
+  }
 }
 
 extension RtCtx on BuildContext {
