@@ -11,6 +11,7 @@ import 'package:flutter_hbb/mobile/widgets/dialog.dart' show showServerSettings;
 import 'package:flutter_hbb/models/platform_model.dart';
 import 'package:flutter_hbb/models/server_model.dart';
 import 'package:flutter_hbb/models/state_model.dart';
+import 'package:flutter_hbb/realteq/i18n.dart';
 import 'package:flutter_hbb/realteq/rt.dart';
 import 'package:flutter_hbb/realteq/version.dart';
 import 'package:get/get.dart';
@@ -54,14 +55,7 @@ String realteqClientName(String id, [String fallback = '']) {
   return fallback.isNotEmpty ? fallback : id;
 }
 
-String realteqAgo(int ts) {
-  final d = DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(ts));
-  if (d.inMinutes < 1) return 'agora';
-  if (d.inMinutes < 60) return 'há ${d.inMinutes} min';
-  if (d.inHours < 24) return 'há ${d.inHours} h';
-  if (d.inDays == 1) return 'ontem';
-  return 'há ${d.inDays} dias';
-}
+String realteqAgo(int ts) => trAgo(ts);
 
 /// Um cliente = todos os atendimentos do mesmo ID, do mais recente ao mais antigo.
 class _Client {
@@ -216,12 +210,12 @@ class _Rail extends StatelessWidget {
         Image.asset('assets/realteq-crown.png',
             width: 44, filterQuality: FilterQuality.high),
         const SizedBox(height: 16),
-        item(Icons.home_rounded, 'Início', 0),
-        item(Icons.groups_rounded, 'Clientes', 1),
+        item(Icons.home_rounded, tr('Início'), 0),
+        item(Icons.groups_rounded, tr('Clientes'), 1),
         const Spacer(),
         const _ThemeToggle(),
         const SizedBox(height: 6),
-        item(Icons.tune_rounded, 'Configurações', 2),
+        item(Icons.tune_rounded, tr('Configurações'), 2),
       ]),
     );
   }
@@ -235,7 +229,7 @@ class _ThemeToggle extends StatelessWidget {
     final p = context.rt;
     final dark = MyTheme.currentThemeMode() == ThemeMode.dark;
     return Tooltip(
-      message: dark ? 'Modo claro' : 'Modo escuro',
+      message: dark ? tr('Modo claro') : tr('Modo escuro'),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () =>
@@ -269,7 +263,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.rt;
-    const titles = ['Início', 'Clientes', 'Configurações'];
+    final titles = [tr('Início'), tr('Clientes'), tr('Configurações')];
     final stopped = Get.isRegistered<RxBool>(tag: 'stop-service')
         ? Get.find<RxBool>(tag: 'stop-service')
         : false.obs;
@@ -290,12 +284,12 @@ class _Header extends StatelessWidget {
               ? p.ok
               : (off || st == SvcStatus.notReady ? p.danger : p.accent);
           final text = off
-              ? 'Serviço parado'
+              ? tr('Serviço parado')
               : st == SvcStatus.connecting
-                  ? 'Conectando...'
+                  ? tr('Conectando...')
                   : st == SvcStatus.notReady
-                      ? 'Sem conexão com o servidor'
-                      : 'Serviço ativo';
+                      ? tr('Sem conexão com o servidor')
+                      : tr('Serviço ativo');
           return Row(children: [
             RtDot(color),
             const SizedBox(width: 8),
@@ -403,18 +397,28 @@ class _HomeViewState extends State<_HomeView> {
                 ),
                 const SizedBox(height: 6),
                 Row(children: [
-                  RtButton('Copiar ID', icon: Icons.copy_rounded, onTap: () {
+                  Expanded(
+                      child: RtButton('Copiar ID',
+                          icon: Icons.copy_rounded,
+                          expand: true, onTap: () {
                     Clipboard.setData(ClipboardData(text: model.serverId.text));
-                    showToast('ID copiado');
-                  }),
-                  const SizedBox(width: 8),
-                  RtButton('Copiar convite', icon: Icons.send_rounded, onTap: () {
+                    showToast(tr('ID copiado'));
+                  })),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: RtButton('Copiar convite',
+                          icon: Icons.send_rounded,
+                          expand: true, onTap: () {
                     Clipboard.setData(ClipboardData(
-                        text: 'Para eu te atender, abra o Realteq Desk e me informe:\n'
-                            'ID: ${model.serverId.text}\n'
-                            'Senha: ${model.serverPasswd.text}'));
-                    showToast('Convite copiado. Cole na conversa com o cliente.');
-                  }),
+                        text: rtEn
+                            ? 'So I can help you, open Realteq Desk and send me:\n'
+                                'ID: ${model.serverId.text}\n'
+                                'Password: ${model.serverPasswd.text}'
+                            : 'Para eu te atender, abra o Realteq Desk e me informe:\n'
+                                'ID: ${model.serverId.text}\n'
+                                'Senha: ${model.serverPasswd.text}'));
+                    showToast(tr('Convite copiado. Cole na conversa com o cliente.'));
+                  })),
                 ]),
                 const SizedBox(height: 18),
                 Container(
@@ -442,20 +446,20 @@ class _HomeViewState extends State<_HomeView> {
                                         fontSize: 22,
                                         letterSpacing: 4,
                                         fontFamily: 'Consolas',
-                                        color: showOneTime ? p.accent : p.mut)),
+                                        color: showOneTime ? p.ink : p.mut)),
                               ),
                             ),
                           ]),
                     ),
                     if (showOneTime) ...[
-                      RtIconButton(Icons.copy_rounded, tooltip: 'Copiar senha',
+                      RtIconButton(Icons.copy_rounded, tooltip: tr('Copiar senha'),
                           onTap: () {
                         Clipboard.setData(
                             ClipboardData(text: model.serverPasswd.text));
-                        showToast('Senha copiada');
+                        showToast(tr('Senha copiada'));
                       }),
                       RtIconButton(Icons.refresh_rounded,
-                          tooltip: 'Gerar nova senha',
+                          tooltip: tr('Gerar nova senha'),
                           onTap: () => bind.mainUpdateTemporaryPassword()),
                     ],
                   ]),
@@ -491,7 +495,7 @@ class _HomeViewState extends State<_HomeView> {
                   inputFormatters: [IDTextInputFormatter()],
                   onSubmitted: (_) => _go(),
                   decoration: InputDecoration(
-                    hintText: 'ID do computador remoto',
+                    hintText: tr('ID do computador remoto'),
                     hintStyle: TextStyle(color: p.mut),
                     filled: true,
                     fillColor: p.field,
@@ -524,7 +528,7 @@ class _HomeViewState extends State<_HomeView> {
                 if (_groupClients().isEmpty) return const SizedBox();
                 return InkWell(
                   onTap: _clearHistory,
-                  child: Text('Limpar tudo',
+                  child: Text(tr('Limpar tudo'),
                       style: TextStyle(fontSize: 12, color: p.mut)),
                 );
               }),
@@ -536,7 +540,7 @@ class _HomeViewState extends State<_HomeView> {
               if (clients.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: Text('Nenhum atendimento ainda.',
+                  child: Text(tr('Nenhum atendimento ainda.'),
                       style: TextStyle(color: p.mut, fontSize: 13)),
                 );
               }
@@ -607,7 +611,7 @@ class _ClientTile extends StatelessWidget {
             Text('${c.count}x', style: TextStyle(fontSize: 12, color: p.mut)),
           ],
           Tooltip(
-            message: c.fav ? 'Tirar dos favoritos' : 'Favoritar',
+            message: c.fav ? tr('Tirar dos favoritos') : tr('Favoritar'),
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () => _setMeta(c.id, fav: !c.fav),
@@ -619,7 +623,7 @@ class _ClientTile extends StatelessWidget {
             ),
           ),
           Tooltip(
-            message: 'Editar nome e nota',
+            message: tr('Editar nome e nota'),
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () => _renameClient(context, c),
@@ -630,7 +634,7 @@ class _ClientTile extends StatelessWidget {
             ),
           ),
           Tooltip(
-            message: 'Remover este cliente do histórico',
+            message: tr('Remover este cliente do histórico'),
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () => _removeClient(c.id),
@@ -654,14 +658,14 @@ Future<void> _renameClient(BuildContext context, _Client c) async {
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: p.panel,
-      title: Text('Cliente', style: TextStyle(color: p.ink, fontSize: 16)),
+      title: Text(tr('Cliente'), style: TextStyle(color: p.ink, fontSize: 16)),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(
           controller: ctrl,
           autofocus: true,
           style: TextStyle(color: p.ink),
           decoration: InputDecoration(
-              hintText: 'Nome. Ex.: Maria (Recepção)',
+              hintText: tr('Nome. Ex.: Maria (Recepção)'),
               hintStyle: TextStyle(color: p.mut),
               filled: true,
               fillColor: p.field),
@@ -672,7 +676,7 @@ Future<void> _renameClient(BuildContext context, _Client c) async {
           style: TextStyle(color: p.ink),
           onSubmitted: (_) => Navigator.pop(ctx, true),
           decoration: InputDecoration(
-              hintText: 'Nota. Ex.: impressora da sala 2',
+              hintText: tr('Nota. Ex.: impressora da sala 2'),
               hintStyle: TextStyle(color: p.mut),
               filled: true,
               fillColor: p.field),
@@ -681,10 +685,10 @@ Future<void> _renameClient(BuildContext context, _Client c) async {
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Cancelar', style: TextStyle(color: p.mut))),
+            child: Text(tr('Cancelar'), style: TextStyle(color: p.mut))),
         TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Salvar', style: TextStyle(color: p.accent))),
+            child: Text(tr('Salvar'), style: TextStyle(color: p.accent))),
       ],
     ),
   );
@@ -746,7 +750,7 @@ class _ClientsViewState extends State<_ClientsView> {
             child: clients.isEmpty
                 ? Center(
                     child: Text(
-                        'Os clientes que você atender aparecem aqui,\ncom o nome que você der a eles.',
+                        tr('Os clientes que você atender aparecem aqui,\ncom o nome que você der a eles.'),
                         textAlign: TextAlign.center,
                         style: TextStyle(color: p.mut, height: 1.5)))
                 : ListView(children: [
@@ -815,11 +819,11 @@ class _SettingsGateState extends State<_SettingsGate> {
               child: Icon(Icons.lock_rounded, color: p.accent, size: 24),
             ),
             const SizedBox(height: 16),
-            Text('Configurações protegidas',
+            Text(tr('Configurações protegidas'),
                 style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w600, color: p.ink)),
             const SizedBox(height: 6),
-            Text('Só o administrador pode alterar as configurações.\nDigite a senha para continuar.',
+            Text(tr('Só o administrador pode alterar as configurações.\nDigite a senha para continuar.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13, height: 1.5, color: p.mut)),
             const SizedBox(height: 18),
@@ -833,9 +837,9 @@ class _SettingsGateState extends State<_SettingsGate> {
               onSubmitted: (_) => _submit(),
               style: TextStyle(color: p.ink),
               decoration: InputDecoration(
-                hintText: 'Senha do administrador',
+                hintText: tr('Senha do administrador'),
                 hintStyle: TextStyle(color: p.mut),
-                errorText: _wrong ? 'Senha incorreta' : null,
+                errorText: _wrong ? tr('Senha incorreta') : null,
                 filled: true,
                 fillColor: p.field,
                 contentPadding:
@@ -870,7 +874,7 @@ class _SettingsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.rt;
-    const cats = [
+    final cats = [
       ['Geral', 'Idioma, tema e serviço'],
       ['Segurança', 'Senhas de acesso'],
       ['Servidor', 'Conexão com o servidor'],
@@ -908,7 +912,7 @@ class _SettingsBody extends StatelessWidget {
                               ? p.accent
                               : p.mut),
                       const SizedBox(width: 10),
-                      Text(cats[i][0],
+                      Text(tr(cats[i][0]),
                           style: TextStyle(
                               fontSize: 14,
                               color: realteqSettingsTab.value == i
@@ -923,11 +927,11 @@ class _SettingsBody extends StatelessWidget {
         child: Obx(() {
           final i = realteqSettingsTab.value;
           return ListView(padding: const EdgeInsets.all(28), children: [
-            Text(cats[i][0],
+            Text(tr(cats[i][0]),
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w600, color: p.ink)),
             const SizedBox(height: 4),
-            Text(cats[i][1], style: TextStyle(fontSize: 13, color: p.mut)),
+            Text(tr(cats[i][1]), style: TextStyle(fontSize: 13, color: p.mut)),
             const SizedBox(height: 20),
             if (i == 0) const _GeneralSettings(),
             if (i == 1) const _SecuritySettings(),
@@ -966,9 +970,8 @@ class _GeneralSettingsState extends State<_GeneralSettings> {
           onSelect: (i) async {
             final key = i == 1 ? 'en' : 'pt-br';
             await bind.mainSetLocalOption(key: kCommConfKeyLang, value: key);
-            await reloadAllWindows();
             bind.mainChangeLanguage(lang: key);
-            if (mounted) setState(() {});
+            await reloadAllWindows();
           },
         ),
       ),
@@ -1059,7 +1062,7 @@ class _AboutSettings extends StatelessWidget {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 6),
-        child: Text('Aplicativo em desenvolvimento por Felipe Lima.',
+        child: Text(tr('Aplicativo em desenvolvimento por Felipe Lima.'),
             style: TextStyle(color: p.mut, fontSize: 12)),
       ),
     ]);

@@ -1,3 +1,4 @@
+import 'package:flutter_hbb/realteq/i18n.dart';
 import 'dart:convert';
 import 'dart:async';
 
@@ -330,7 +331,18 @@ class _ToolbarTheme {
   static Color inactiveColor = const Color(0x1AFFFFFF);
   static Color hoverInactiveColor = const Color(0x33FFFFFF);
   static const Color barColor = Color(0xFF201D15);
-  static const Map<String, String> labels = {
+  static Map<String, String> get labels => rtEn ? _labelsEn : _labelsPt;
+  static const Map<String, String> _labelsEn = {
+    'Select Monitor': 'Monitor',
+    'Control Actions': 'Control',
+    'Display Settings': 'Display',
+    'Keyboard Settings': 'Keyboard',
+    'Chat': 'Chat',
+    'Text chat': 'Chat',
+    'Voice call': 'Voice',
+    'Close': 'End',
+  };
+  static const Map<String, String> _labelsPt = {
     'Select Monitor': 'Monitor',
     'Control Actions': 'Controle',
     'Display Settings': 'Exibição',

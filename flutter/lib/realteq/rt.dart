@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_hbb/realteq/i18n.dart';
+
 /// Obsidiana: tokens de cor e componentes base do Realteq Desk.
 /// Toda tela nova usa só isto, para a identidade ficar num lugar só.
 class RtPalette {
@@ -150,7 +152,7 @@ class RtLabel extends StatelessWidget {
   const RtLabel(this.text, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Text(text.toUpperCase(),
+  Widget build(BuildContext context) => Text(tr(text).toUpperCase(),
       style: TextStyle(
           fontSize: 11,
           letterSpacing: 1.5,
@@ -198,11 +200,15 @@ class RtButton extends StatelessWidget {
                   Icon(icon, size: 18, color: fg),
                   const SizedBox(width: 8),
                 ],
-                Text(label,
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: fg)),
+                Flexible(
+                  child: Text(tr(label),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: fg)),
+                ),
               ],
             ),
           ),
@@ -225,7 +231,7 @@ class RtIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.rt;
     return Tooltip(
-      message: tooltip,
+      message: tr(tooltip),
       child: Material(
         color: active ? p.panel2 : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
@@ -305,7 +311,7 @@ class RtSegmented extends StatelessWidget {
                 color: i == selected ? p.accent : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(options[i],
+              child: Text(tr(options[i]),
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -338,13 +344,13 @@ class RtRow extends StatelessWidget {
       child: Row(children: [
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title,
+            Text(tr(title),
                 style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w500, color: p.ink)),
             if (sub != null)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: Text(sub!, style: TextStyle(fontSize: 12, color: p.mut)),
+                child: Text(tr(sub!), style: TextStyle(fontSize: 12, color: p.mut)),
               ),
           ]),
         ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_hbb/realteq/i18n.dart';
 import 'package:flutter_hbb/realteq/rt.dart';
 import 'dart:convert';
 import 'dart:math';
@@ -4453,22 +4454,22 @@ Future<void> realteqAskHowToConnect(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Como você quer entrar?',
+            Text(tr('Como você quer entrar?'),
                 style: TextStyle(
                     fontSize: 19, fontWeight: FontWeight.w600, color: p.ink)),
             const SizedBox(height: 4),
-            Text('Computador ${formatID(id)}',
+            Text('${tr('Computador')} ${formatID(id)}',
                 style: TextStyle(fontSize: 13, color: p.mut)),
             const SizedBox(height: 16),
             TextField(
               controller: nameCtrl,
-              decoration: const InputDecoration(
-                  hintText: 'Nome do cliente (opcional)', isDense: true),
+              decoration: InputDecoration(
+                  hintText: tr('Nome do cliente (opcional)'), isDense: true),
             ),
             const SizedBox(height: 14),
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              option(Icons.bolt_rounded, 'Acesso direto',
-                  'Usa a senha mestra. Entra sem o cliente aceitar.', true, () {
+              option(Icons.bolt_rounded, tr('Acesso direto'),
+                  tr('Usa a senha mestra. Entra sem o cliente aceitar.'), true, () {
                 close();
                 gFFI.dialogManager.show((setState, close2, context) {
                   return CustomAlertDialog(
@@ -4480,7 +4481,7 @@ Future<void> realteqAskHowToConnect(
                           Row(children: [
                             Icon(Icons.shield_outlined, color: p.accent),
                             const SizedBox(width: 10),
-                            Text('Lembrete',
+                            Text(tr('Lembrete'),
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -4488,7 +4489,9 @@ Future<void> realteqAskHowToConnect(
                           ]),
                           const SizedBox(height: 12),
                           Text(
-                              'Você vai entrar direto no computador ${formatID(id)} sem que o cliente precise aceitar. Use só quando o cliente já autorizou o acesso.',
+                              rtEn
+                                  ? 'You will connect straight to computer ${formatID(id)} without the client having to accept. Use this only when the client has already authorized access.'
+                                  : 'Você vai entrar direto no computador ${formatID(id)} sem que o cliente precise aceitar. Use só quando o cliente já autorizou o acesso.',
                               style: TextStyle(
                                   fontSize: 13.5, height: 1.5, color: p.mut)),
                           const SizedBox(height: 18),
@@ -4515,8 +4518,8 @@ Future<void> realteqAskHowToConnect(
                 });
               }),
               const SizedBox(width: 12),
-              option(Icons.how_to_reg_rounded, 'Aguardar o cliente',
-                  'O cliente aceita no computador dele ou passa a senha.', false,
+              option(Icons.how_to_reg_rounded, tr('Aguardar o cliente'),
+                  tr('O cliente aceita no computador dele ou passa a senha.'), false,
                   () {
                 close();
                 realteqSaveName(id, nameCtrl.text);
@@ -4532,7 +4535,7 @@ Future<void> realteqAskHowToConnect(
               RtButton('Criar atalho', icon: Icons.add_to_home_screen_rounded,
                   onTap: () {
                 bind.mainCreateShortcut(id: id);
-                showToast('Atalho criado na área de trabalho');
+                showToast(tr('Atalho criado na área de trabalho'));
               }),
               const Spacer(),
               RtButton('Cancelar', onTap: close),

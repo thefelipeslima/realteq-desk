@@ -1,5 +1,6 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hbb/realteq/i18n.dart';
 import 'package:flutter_hbb/common.dart';
 import 'package:flutter_hbb/models/chat_model.dart';
 import 'package:get/get.dart';
@@ -112,14 +113,14 @@ class ChatPage extends StatelessWidget implements PageShape {
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                        other.isEmpty ? 'Conversa' : 'Conversa com $other',
+                        other.isEmpty ? tr('Conversa') : (rtEn ? 'Chat with $other' : 'Conversa com $other'),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: Color(0xFFF3EAD8),
                             fontWeight: FontWeight.w600,
                             fontSize: 14)),
                   ),
-                  Text(connected ? 'conectado' : 'desconectado',
+                  Text(connected ? tr('conectado') : tr('desconectado'),
                       style: TextStyle(color: Color(0xFF9B917A), fontSize: 12)),
                 ]),
               ),
@@ -174,7 +175,7 @@ class ChatPage extends StatelessWidget implements PageShape {
                               : CrossAxisAlignment.start,
                           children: <Widget>[
                             if (isOwnMessage)
-                              Text('Você',
+                              Text(tr('Você'),
                                   style: TextStyle(
                                       color: Color(0xFF241B00),
                                       fontSize: 11,

@@ -15,3 +15,4 @@ Regra: só enviar ao GitHub e compilar quando o usuário der o OK. Antes de envi
 - Alça de arrastar da barra maior, amarela e com cursor de mão; encaixa nas 4 bordas (topo incluído), setinha recolhe/mostra. Posição 100% livre no meio da tela NÃO feita (exigiria reescrever a lógica de encaixe).
 - Clientes recentes e lista de Clientes: botão X remove um cliente do histórico (além de Limpar histórico). Sobre: 'Aplicativo em desenvolvimento por Felipe Lima.' Feito local, sem build.
 - Chat renovado, voz removida, histórico com duração/nota/favorito/renomear/limpar, som ao conectar, botão Copiar convite. Versão 0.9.3.
+- Idioma troca na hora (inglês/português) em todas as telas; diálogo Definir senha no estilo Obsidiana; botões Copiar ID/convite alinhados; Sair da bandeja traduzido. Versão 0.9.4.

@@ -75,7 +75,7 @@ fn make_tray() -> hbb_common::ResultType<()> {
         None
     };
     let open_i = MenuItem::new(translate("Open".to_owned()), true, None);
-    let exit_i = MenuItem::new("Sair".to_owned(), true, None);
+    let exit_i = MenuItem::new(translate("Quit".to_owned()), true, None);
     if let Some(quit_i) = &quit_i {
         tray_menu.append_items(&[&open_i, &exit_i, quit_i]).ok();
     } else {

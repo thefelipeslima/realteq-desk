@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hbb/common.dart';
+import 'package:password_strength/password_strength.dart';
 import 'package:flutter_hbb/common/widgets/custom_password.dart';
 import 'package:flutter_hbb/consts.dart';
 import 'package:flutter_hbb/desktop/widgets/update_progress.dart';
 import 'package:flutter_hbb/models/platform_model.dart';
 import 'package:flutter_hbb/models/state_model.dart';
+import 'package:flutter_hbb/realteq/i18n.dart';
 import 'package:flutter_hbb/realteq/rt.dart';
 import 'package:flutter_hbb/realteq/shell.dart';
 import 'package:flutter_hbb/utils/multi_window_manager.dart';
@@ -74,15 +76,17 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         !isCardClosed &&
         isWindows &&
         bind.mainIsInstalled()) {
-      msg = 'Há uma nova versão disponível (${bind.mainGetNewVersion()}).';
-      btn = 'Atualizar';
+      msg = rtEn
+          ? 'A new version is available (${bind.mainGetNewVersion()}).'
+          : 'Há uma nova versão disponível (${bind.mainGetNewVersion()}).';
+      btn = tr('Atualizar');
       action = () => handleUpdate(updateUrl);
     } else if (isWindows &&
         !bind.isDisableInstallation() &&
         bind.mainIsInstalled() &&
         bind.mainIsInstalledLowerVersion()) {
-      msg = 'A instalação está numa versão mais antiga.';
-      btn = 'Atualizar instalação';
+      msg = tr('A instalação está numa versão mais antiga.');
+      btn = tr('Atualizar instalação');
       action = () async {
         await rustDeskWinManager.closeAllSubWindows();
         bind.mainUpdateMe();
@@ -425,168 +429,162 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
       close();
     }
 
+    final p = context.rt;
+    InputDecoration deco(String err) => InputDecoration(
+          errorText: err.isNotEmpty ? err : null,
+          counterText: '',
+          filled: true,
+          fillColor: p.field,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: p.line)),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: p.line)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: p.accent, width: 1.5)),
+        );
     return CustomAlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      contentBoxConstraints: const BoxConstraints(maxWidth: 460),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.key, color: MyTheme.accent),
-          Text(translate("Set Password")).paddingOnly(left: 10),
+          Row(children: [
+            Icon(Icons.key_rounded, color: p.accent, size: 22),
+            const SizedBox(width: 10),
+            Text(tr('Definir senha mestra'),
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w600, color: p.ink)),
+          ]),
+          const SizedBox(height: 18),
+          const RtLabel('Nova senha'),
+          const SizedBox(height: 6),
+          TextField(
+            obscureText: true,
+            controller: p0,
+            autofocus: true,
+            maxLength: maxLength,
+            style: TextStyle(color: p.ink),
+            decoration: deco(errMsg0),
+            onChanged: (value) {
+              rxPass.value = value.trim();
+              setState(() {
+                errMsg0 = '';
+                updateCanSubmit();
+              });
+            },
+          ).workaroundFreezeLinuxMint(),
+          const SizedBox(height: 10),
+          Obx(() {
+            final strength = estimatePasswordStrength(rxPass.value);
+            final empty = rxPass.value.isEmpty;
+            Color seg(double min) => empty || strength < min
+                ? p.line
+                : (strength < 0.33
+                    ? p.danger
+                    : (strength < 0.67 ? p.accent : p.ok));
+            return Row(children: [
+              for (final m in const [0.0, 0.33, 0.67]) ...[
+                Expanded(
+                    child: Container(
+                        height: 6,
+                        decoration: BoxDecoration(
+                            color: seg(m),
+                            borderRadius: BorderRadius.circular(3)))),
+                const SizedBox(width: 6),
+              ],
+              SizedBox(
+                width: 64,
+                child: Text(
+                    empty
+                        ? ''
+                        : translate(strength < 0.33
+                            ? 'Weak'
+                            : (strength < 0.67 ? 'Medium' : 'Strong')),
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontSize: 12, color: p.mut)),
+              ),
+            ]);
+          }),
+          const SizedBox(height: 16),
+          const RtLabel('Confirmação'),
+          const SizedBox(height: 6),
+          TextField(
+            obscureText: true,
+            controller: p1,
+            maxLength: maxLength,
+            style: TextStyle(color: p.ink),
+            decoration: deco(errMsg1),
+            onChanged: (value) {
+              setState(() {
+                errMsg1 = '';
+                updateCanSubmit();
+              });
+            },
+          ).workaroundFreezeLinuxMint(),
+          if (statusTip.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Row(children: [
+              Icon(Icons.info_outline_rounded, color: p.accent, size: 16),
+              const SizedBox(width: 8),
+              Expanded(
+                  child: Text(statusTip,
+                      style: TextStyle(fontSize: 12.5, color: p.mut))),
+            ]),
+          ],
+          const SizedBox(height: 14),
+          Obx(() => Wrap(
+                runSpacing: 8,
+                spacing: 8,
+                children: rules.map((e) {
+                  final ok = e.validate(rxPass.value.trim());
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: ok ? p.ok.withOpacity(0.16) : p.panel2,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(ok ? Icons.check_rounded : Icons.circle_outlined,
+                          size: 13, color: ok ? p.ok : p.mut),
+                      const SizedBox(width: 5),
+                      Text(e.name,
+                          style: TextStyle(
+                              fontSize: 12, color: ok ? p.ok : p.mut)),
+                    ]),
+                  );
+                }).toList(),
+              )),
+          const SizedBox(height: 20),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            RtButton('Cancelar', onTap: close),
+            if (localPasswordSet) ...[
+              const SizedBox(width: 10),
+              RtButton('Remover', danger: true, onTap: () async {
+                setState(() {
+                  errMsg0 = "";
+                  errMsg1 = "";
+                });
+                final ok =
+                    await bind.mainSetPermanentPasswordWithResult(password: "");
+                if (!ok) {
+                  setState(() {
+                    errMsg0 = '${translate('Prompt')}: ${translate("Failed")}';
+                  });
+                  return;
+                }
+                close();
+              }),
+            ],
+            const SizedBox(width: 10),
+            RtButton('OK', primary: true, onTap: canSubmit ? submit : null),
+          ]),
         ],
       ),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 500),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: showStatusTipOnMobile ? 0.0 : 6.0,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        labelText: translate('Password'),
-                        errorText: errMsg0.isNotEmpty ? errMsg0 : null),
-                    controller: p0,
-                    autofocus: true,
-                    onChanged: (value) {
-                      rxPass.value = value.trim();
-                      setState(() {
-                        errMsg0 = '';
-                        updateCanSubmit();
-                      });
-                    },
-                    maxLength: maxLength,
-                  ).workaroundFreezeLinuxMint(),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(child: PasswordStrengthIndicator(password: rxPass)),
-              ],
-            ).marginOnly(top: 2, bottom: showStatusTipOnMobile ? 2 : 8),
-            SizedBox(
-              height: showStatusTipOnMobile ? 0.0 : 8.0,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        labelText: translate('Confirmation'),
-                        errorText: errMsg1.isNotEmpty ? errMsg1 : null),
-                    controller: p1,
-                    onChanged: (value) {
-                      setState(() {
-                        errMsg1 = '';
-                        updateCanSubmit();
-                      });
-                    },
-                    maxLength: maxLength,
-                  ).workaroundFreezeLinuxMint(),
-                ),
-              ],
-            ),
-            if (statusTip.isNotEmpty)
-              Row(
-                children: [
-                  Icon(Icons.info, color: Colors.amber, size: 18)
-                      .marginOnly(right: 6),
-                  Expanded(
-                      child: Text(
-                    statusTip,
-                    style: const TextStyle(fontSize: 13, height: 1.1),
-                  ))
-                ],
-              ).marginOnly(top: 6, bottom: 2),
-            SizedBox(
-              height: showStatusTipOnMobile ? 0.0 : 8.0,
-            ),
-            Obx(() => Wrap(
-                  runSpacing: showStatusTipOnMobile ? 2.0 : 8.0,
-                  spacing: 4,
-                  children: rules.map((e) {
-                    var checked = e.validate(rxPass.value.trim());
-                    return Chip(
-                        label: Text(
-                          e.name,
-                          style: TextStyle(
-                              color: checked
-                                  ? const Color(0xFF0A9471)
-                                  : Color.fromARGB(255, 198, 86, 157)),
-                        ),
-                        backgroundColor: checked
-                            ? const Color(0xFFD0F7ED)
-                            : Color.fromARGB(255, 247, 205, 232));
-                  }).toList(),
-                ))
-          ],
-        ),
-      ),
-      actions: (() {
-        final cancelButton = dialogButton(
-          "Cancel",
-          icon: Icon(Icons.close_rounded),
-          onPressed: close,
-          isOutline: true,
-        );
-        final removeButton = dialogButton(
-          "Remove",
-          icon: Icon(Icons.delete_outline_rounded),
-          onPressed: () async {
-            setState(() {
-              errMsg0 = "";
-              errMsg1 = "";
-            });
-            final ok =
-                await bind.mainSetPermanentPasswordWithResult(password: "");
-            if (!ok) {
-              setState(() {
-                errMsg0 = '${translate('Prompt')}: ${translate("Failed")}';
-              });
-              return;
-            }
-            close();
-          },
-          buttonStyle: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red)),
-        );
-        final okButton = dialogButton(
-          "OK",
-          icon: Icon(Icons.done_rounded),
-          onPressed: canSubmit ? submit : null,
-        );
-        if (!isDesktop && !isWebDesktop && localPasswordSet) {
-          return [
-            Align(
-              alignment: Alignment.centerRight,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    cancelButton,
-                    const SizedBox(width: 4),
-                    removeButton,
-                    const SizedBox(width: 4),
-                    okButton,
-                  ],
-                ),
-              ),
-            ),
-          ];
-        }
-        return [
-          cancelButton,
-          if (localPasswordSet) removeButton,
-          okButton,
-        ];
-      })(),
       onSubmit: canSubmit ? submit : null,
       onCancel: close,
     );
