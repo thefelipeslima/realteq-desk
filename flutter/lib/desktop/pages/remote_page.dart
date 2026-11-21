@@ -147,9 +147,12 @@ class _RemotePageState extends State<RemotePage>
     _remoteCursorMoved = RemoteCursorMovedState.find(id);
   }
 
+  DateTime _realteqStart = DateTime.now();
+
   @override
   void initState() {
     super.initState();
+    _realteqStart = DateTime.now();
     _ffi = FFI(widget.sessionId);
     if (isMacOS) {
       // SchedulerBinding.instance.lifecycleState is null in the first connection in a new window.
@@ -664,6 +667,7 @@ class _RemotePageState extends State<RemotePage>
       WidgetsBinding.instance.removeObserver(this);
     }
     super.dispose();
+    realteqEndHistory(widget.id, DateTime.now().difference(_realteqStart));
     debugPrint("REMOTE PAGE dispose session $sessionId ${widget.id}");
 
     // Defensive cleanup: ensure host system-key propagation is reset even if

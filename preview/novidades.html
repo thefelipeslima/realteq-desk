@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Realteq Desk - prévia das novidades</title>
+<style>
+:root{--bg:#17150F;--rail:#110F0A;--panel:#201D15;--panel2:#2A251A;--field:#15130D;--line:#332E22;--ink:#F3EAD8;--mut:#9B917A;--acc:#E6A800;--accInk:#241B00;--ok:#3BB273;--red:#D6402B}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",system-ui,sans-serif;padding:24px}
+h1{font-size:20px;margin:0 0 4px}p.sub{color:var(--mut);margin:0 0 20px}
+h2{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin:34px 0 10px}
+.wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.note{color:var(--mut);font-size:12px;margin-top:10px}
+.lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);font-weight:600}
+.row{display:flex;align-items:center;gap:10px}
+.btn{background:var(--panel2);color:var(--ink);border-radius:10px;padding:7px 12px;font-weight:700;font-size:12px;display:inline-block}
+.btn.p{background:var(--acc);color:var(--accInk)}
+.tile{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid var(--line)}
+.av{width:32px;height:32px;border-radius:16px;background:var(--panel2);color:var(--acc);display:grid;place-items:center;font-weight:700}
+.grow{flex:1;min-width:0}.mut{color:var(--mut);font-size:12px}
+.star{color:var(--acc)}.x{color:var(--mut)}
+.chat{display:flex;flex-direction:column;height:430px;padding:0;overflow:hidden}
+.chead{padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.chead b{display:block}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px}
+.msgs{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.m{max-width:78%}.m small{display:block;color:var(--mut);font-size:11px;margin:0 6px 2px}
+.m div{padding:9px 13px;border-radius:16px}
+.me{align-self:flex-end;text-align:right}.me div{background:var(--acc);color:var(--accInk);border-bottom-right-radius:4px}
+.them{align-self:flex-start}.them div{background:var(--panel2);border-bottom-left-radius:4px}
+.day{align-self:center;color:var(--mut);font-size:11px}
+.cin{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.cin span{flex:1;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:9px 12px;color:var(--mut)}
+.screen{position:relative;height:300px;background:#0c0a06;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.mon{position:absolute;border:2px solid var(--line);background:linear-gradient(135deg,#2a251a,#17150f);display:grid;place-items:center;color:var(--mut);font-size:12px}
+.mon.on{border-color:var(--acc);color:var(--ink)}
+.bar{position:absolute;left:8px;top:50%;transform:translateY(-50%);background:#201D15;border:1px solid #3A3425;border-radius:22px;padding:8px 6px;display:flex;flex-direction:column;gap:8px;align-items:center;font-size:11px;width:54px;text-align:center}
+.bar i{font-style:normal;color:var(--acc)}.bar .end{background:var(--red);color:#fff;border-radius:12px;padding:3px 6px;font-weight:700}
+.pick{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--field)}
+.chip.on{border-color:var(--acc);color:var(--acc)}
+.toast{background:var(--panel2);border:1px solid var(--acc);border-radius:14px;padding:12px 16px;display:flex;gap:12px;align-items:center}
+</style></head><body>
+<h1>Prévia das novidades</h1>
+<p class="sub">Desenho de como vai ficar. Ainda não foi enviado nem compilado. Me diga o que mudar.</p>
+
+<h2>1. Chat renovado</h2>
+<div class="wrap">
+<div class="card chat">
+ <div class="chead"><b>Conversa com Maria (Recepção)</b><span class="mut"><span class="dot"></span>conectada agora</span></div>
+ <div class="msgs">
+  <div class="day">Hoje, 14:32</div>
+  <div class="m them"><small>Maria (cliente)</small><div>Oi, a impressora parou de imprimir.</div></div>
+  <div class="m me"><small>Você (Suporte)</small><div>Já vou ver. Pode deixar eu mexer no PC?</div></div>
+  <div class="m them"><small>Maria (cliente)</small><div>Pode sim, obrigada!</div></div>
+  <div class="m me"><small>Você (Suporte)</small><div>Pronto, reinstalei o driver. Teste imprimir.</div></div>
+ </div>
+ <div class="cin"><span>Escreva uma mensagem…</span><div class="btn p">Enviar</div></div>
+</div>
+<div class="card"><div class="lbl">O que muda no chat</div>
+<ul style="line-height:1.9;padding-left:18px;margin:10px 0 0">
+<li>Cabeçalho diz com quem você está falando e se está conectado.</li>
+<li>Suas mensagens: amarelas, à direita, com o nome "Você".</li>
+<li>Mensagens do outro lado: cinza, à esquerda, com o nome dele.</li>
+<li>Janela abre sozinha quando chega mensagem, com aviso.</li>
+<li>Botão de voz removido; só texto.</li></ul>
+<p class="note">No lado do cliente a janela é igual, mas com "Você (Cliente)" e "Suporte Realteq".</p></div>
+</div>
+
+<h2>2. Tela adaptada e vários monitores</h2>
+<div class="wrap">
+<div class="card"><div class="lbl">Sessão com 2 monitores lado a lado</div>
+ <div class="screen" style="margin-top:10px">
+  <div class="mon on" style="left:70px;top:60px;width:230px;height:150px">Monitor 1</div>
+  <div class="mon on" style="left:310px;top:60px;width:230px;height:150px">Monitor 2</div>
+  <div class="bar"><i>⠿</i><span>Monitor</span><span>Controle</span><span>Exibição</span><span>Teclado</span><span>Chat</span><div class="end">Encerrar</div></div>
+ </div>
+ <p class="note">Janela normal (não é tela cheia). A imagem se ajusta ao tamanho da janela.</p></div>
+<div class="card"><div class="lbl">Menu Monitor</div>
+ <div class="pick"><div class="chip on">Monitor 1 ✓</div><div class="chip on">Monitor 2 ✓</div><div class="chip">Monitor 3</div></div>
+ <div class="pick"><div class="chip">Só um</div><div class="chip on">Ver 2 juntos</div><div class="chip">Ver 3 juntos</div></div>
+ <div class="pick" style="margin-top:16px"><div class="chip on">Escala: Adaptada (padrão)</div><div class="chip">Original</div></div>
+ <p class="note">Você escolhe quais monitores aparecem juntos. Adaptada vem como padrão; Original continua disponível para navegar.</p></div>
+</div>
+
+<h2>3. Histórico com duração, nota e favoritos</h2>
+<div class="wrap">
+<div class="card"><div class="lbl">Clientes recentes</div>
+ <div class="tile"><div class="av">M</div><div class="grow"><b>Maria (Recepção)</b> <span class="star">★</span><div class="mut">261 836 621 · "impressora HP da sala 2"</div></div><div class="mut" style="text-align:right">hoje 14:32<br>duração 18 min</div><span class="x">✕</span></div>
+ <div class="tile"><div class="av">J</div><div class="grow"><b>João (Financeiro)</b><div class="mut">515 609 396 · sem nota</div></div><div class="mut" style="text-align:right">ontem 09:10<br>duração 6 min</div><span class="x">✕</span></div>
+ <p class="note">Estrela fixa o cliente no topo. Clique no nome para editar a nota. O X remove do histórico.</p></div>
+<div class="card"><div class="lbl">Avisos</div>
+ <div class="toast" style="margin-top:10px"><span style="font-size:20px">🔔</span><div><b>Maria aceitou a conexão</b><div class="mut">Som curto e aviso na tela</div></div></div>
+ <div style="margin-top:16px" class="lbl">Primeiro contato</div>
+ <div class="row" style="margin-top:8px"><div class="btn p">Enviar este programa ao cliente</div></div>
+ <p class="note">Copia uma mensagem pronta: como abrir o programa e passar o ID e a senha.</p></div>
+</div>
+</body></html>

@@ -70,7 +70,38 @@ class _Client {
   int last;
   int count;
   String lastMode;
+  int dur = 0;
+  String note = '';
+  bool fav = false;
   _Client(this.id, this.name, this.last, this.count, this.lastMode);
+}
+
+Map<String, dynamic> _readMeta() {
+  try {
+    final raw = bind.mainGetLocalOption(key: 'realteq-meta');
+    if (raw.isEmpty) return {};
+    return Map<String, dynamic>.from(jsonDecode(raw) as Map);
+  } catch (_) {
+    return {};
+  }
+}
+
+Future<void> _setMeta(String id, {String? note, bool? fav}) async {
+  final m = _readMeta();
+  final cur = Map<String, dynamic>.from((m[id] ?? {}) as Map);
+  if (note != null) cur['note'] = note.trim();
+  if (fav != null) cur['fav'] = fav;
+  m[id] = cur;
+  await bind.mainSetLocalOption(key: 'realteq-meta', value: jsonEncode(m));
+  realteqHistoryTick.value++;
+}
+
+String _fmtDur(int s) {
+  if (s <= 0) return '';
+  if (s < 60) return '${s}s';
+  final m = s ~/ 60;
+  if (m < 60) return '$m min';
+  return '${m ~/ 60} h ${m % 60} min';
 }
 
 List<_Client> _groupClients() {
@@ -82,12 +113,24 @@ List<_Client> _groupClients() {
     final c = map[id];
     if (c == null) {
       map[id] = _Client(id, realteqClientName(id, (e['name'] ?? '').toString()),
-          ts, 1, (e['mode'] ?? '').toString());
+          ts, 1, (e['mode'] ?? '').toString())
+        ..dur = (e['dur'] ?? 0) as int;
     } else {
       c.count++;
     }
   }
-  return map.values.toList()..sort((a, b) => b.last.compareTo(a.last));
+  final meta = _readMeta();
+  for (final c in map.values) {
+    final m = meta[c.id];
+    if (m is Map) {
+      c.note = (m['note'] ?? '').toString();
+      c.fav = m['fav'] == true;
+    }
+  }
+  return map.values.toList()
+    ..sort((a, b) => a.fav != b.fav
+        ? (a.fav ? -1 : 1)
+        : b.last.compareTo(a.last));
 }
 
 void realteqConnectTo(BuildContext context, String raw) {
@@ -364,6 +407,14 @@ class _HomeViewState extends State<_HomeView> {
                     Clipboard.setData(ClipboardData(text: model.serverId.text));
                     showToast('ID copiado');
                   }),
+                  const SizedBox(width: 8),
+                  RtButton('Copiar convite', icon: Icons.send_rounded, onTap: () {
+                    Clipboard.setData(ClipboardData(
+                        text: 'Para eu te atender, abra o Realteq Desk e me informe:\n'
+                            'ID: ${model.serverId.text}\n'
+                            'Senha: ${model.serverPasswd.text}'));
+                    showToast('Convite copiado. Cole na conversa com o cliente.');
+                  }),
                 ]),
                 const SizedBox(height: 18),
                 Container(
@@ -465,7 +516,19 @@ class _HomeViewState extends State<_HomeView> {
                   onTap: _go),
             ]),
             const SizedBox(height: 22),
-            const RtLabel('Clientes recentes'),
+            Row(children: [
+              const RtLabel('Clientes recentes'),
+              const Spacer(),
+              Obx(() {
+                realteqHistoryTick.value;
+                if (_groupClients().isEmpty) return const SizedBox();
+                return InkWell(
+                  onTap: _clearHistory,
+                  child: Text('Limpar tudo',
+                      style: TextStyle(fontSize: 12, color: p.mut)),
+                );
+              }),
+            ]),
             const SizedBox(height: 8),
             Obx(() {
               realteqHistoryTick.value;
@@ -525,21 +588,126 @@ class _ClientTile extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: p.ink)),
-                  Text(formatID(c.id),
+                  Text(
+                      c.note.isEmpty
+                          ? formatID(c.id)
+                          : '${formatID(c.id)} · ${c.note}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 12, color: p.mut)),
                 ]),
           ),
-          Text(realteqAgo(c.last),
+          Text(
+              c.dur > 0
+                  ? '${realteqAgo(c.last)} · ${_fmtDur(c.dur)}'
+                  : realteqAgo(c.last),
               style: TextStyle(fontSize: 12, color: p.mut)),
           if (!compact) ...[
             const SizedBox(width: 14),
             Text('${c.count}x', style: TextStyle(fontSize: 12, color: p.mut)),
           ],
-          Icon(Icons.chevron_right_rounded, size: 18, color: p.mut),
+          Tooltip(
+            message: c.fav ? 'Tirar dos favoritos' : 'Favoritar',
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => _setMeta(c.id, fav: !c.fav),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Icon(c.fav ? Icons.star_rounded : Icons.star_border_rounded,
+                    size: 17, color: c.fav ? p.accent : p.mut),
+              ),
+            ),
+          ),
+          Tooltip(
+            message: 'Editar nome e nota',
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => _renameClient(context, c),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Icon(Icons.edit_rounded, size: 15, color: p.mut),
+              ),
+            ),
+          ),
+          Tooltip(
+            message: 'Remover este cliente do histórico',
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => _removeClient(c.id),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Icon(Icons.close_rounded, size: 16, color: p.mut),
+              ),
+            ),
+          ),
         ]),
       ),
     );
   }
+}
+
+Future<void> _renameClient(BuildContext context, _Client c) async {
+  final p = context.rt;
+  final ctrl = TextEditingController(text: c.name == c.id ? '' : c.name);
+  final noteCtrl = TextEditingController(text: c.note);
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: p.panel,
+      title: Text('Cliente', style: TextStyle(color: p.ink, fontSize: 16)),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        TextField(
+          controller: ctrl,
+          autofocus: true,
+          style: TextStyle(color: p.ink),
+          decoration: InputDecoration(
+              hintText: 'Nome. Ex.: Maria (Recepção)',
+              hintStyle: TextStyle(color: p.mut),
+              filled: true,
+              fillColor: p.field),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          controller: noteCtrl,
+          style: TextStyle(color: p.ink),
+          onSubmitted: (_) => Navigator.pop(ctx, true),
+          decoration: InputDecoration(
+              hintText: 'Nota. Ex.: impressora da sala 2',
+              hintStyle: TextStyle(color: p.mut),
+              filled: true,
+              fillColor: p.field),
+        ),
+      ]),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('Cancelar', style: TextStyle(color: p.mut))),
+        TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('Salvar', style: TextStyle(color: p.accent))),
+      ],
+    ),
+  );
+  if (ok == true) {
+    await realteqSaveName(c.id, ctrl.text);
+    await _setMeta(c.id, note: noteCtrl.text);
+  }
+  ctrl.dispose();
+  noteCtrl.dispose();
+}
+
+Future<void> _clearHistory() async {
+  await bind.mainSetLocalOption(key: 'realteq-history', value: '');
+  realteqHistoryTick.value++;
+}
+
+Future<void> _removeClient(String id) async {
+  final rest = realteqReadHistory()
+      .where((e) => (e['id'] ?? '').toString() != id)
+      .toList();
+  await bind.mainSetLocalOption(
+      key: 'realteq-history', value: rest.isEmpty ? '' : jsonEncode(rest));
+  realteqHistoryTick.value++;
 }
 
 // -------------------------------------------------------------- Clientes
@@ -882,11 +1050,18 @@ class _AboutSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.rt;
-    return RtRow(
-      title: 'Realteq Desk',
-      sub: 'Suporte remoto da Realteq',
-      trailing: Text('v$kRealteqVersion',
-          style: TextStyle(color: p.mut, fontSize: 13)),
-    );
+    return Column(children: [
+      RtRow(
+        title: 'Realteq Desk',
+        sub: 'Suporte remoto da Realteq',
+        trailing: Text('v$kRealteqVersion',
+            style: TextStyle(color: p.mut, fontSize: 13)),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: Text('Aplicativo em desenvolvimento por Felipe Lima.',
+            style: TextStyle(color: p.mut, fontSize: 12)),
+      ),
+    ]);
   }
 }

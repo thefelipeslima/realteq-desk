@@ -93,7 +93,38 @@ class ChatPage extends StatelessWidget implements PageShape {
                                 (e) => e.id == chatModel.currentKey.connId)
                             ?.disconnected ==
                         true;
-            return Stack(
+            final other = chatModel.currentUser?.firstName ?? '';
+            final connected = !readOnly;
+            return Column(children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                    color: Color(0xFF2A251A),
+                    border: Border(bottom: BorderSide(color: Color(0xFF332E22)))),
+                child: Row(children: [
+                  Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: connected ? Color(0xFF3BB273) : Colors.grey)),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                        other.isEmpty ? 'Conversa' : 'Conversa com $other',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Color(0xFFF3EAD8),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14)),
+                  ),
+                  Text(connected ? 'conectado' : 'desconectado',
+                      style: TextStyle(color: Color(0xFF9B917A), fontSize: 12)),
+                ]),
+              ),
+              Expanded(
+                  child: Stack(
               children: [
                 LayoutBuilder(builder: (context, constraints) {
                   final chat = DashChat(
@@ -132,7 +163,7 @@ class ChatPage extends StatelessWidget implements PageShape {
                     ),
                     messageOptions: MessageOptions(
                       showOtherUsersAvatar: false,
-                      showOtherUsersName: false,
+                      showOtherUsersName: true,
                       textColor: Colors.white,
                       maxWidth: constraints.maxWidth * 0.7,
                       messageTextBuilder: (message, _, __) {
@@ -142,13 +173,24 @@ class ChatPage extends StatelessWidget implements PageShape {
                               ? CrossAxisAlignment.end
                               : CrossAxisAlignment.start,
                           children: <Widget>[
+                            if (isOwnMessage)
+                              Text('Você',
+                                  style: TextStyle(
+                                      color: Color(0xFF241B00),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700)),
                             Text(message.text,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                    color: isOwnMessage
+                                        ? Color(0xFF241B00)
+                                        : Color(0xFFF3EAD8))),
                             Text(
                               "${message.createdAt.hour}:${message.createdAt.minute.toString().padLeft(2, '0')}",
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 8,
+                                color: isOwnMessage
+                                    ? Color(0xFF5A4300)
+                                    : Color(0xFF9B917A),
+                                fontSize: 10,
                               ),
                             ).marginOnly(top: 3),
                           ],
@@ -158,8 +200,9 @@ class ChatPage extends StatelessWidget implements PageShape {
                           (message, previousMessage, nextMessage) {
                         final isOwnMessage = message.user.id.isBlank!;
                         return defaultMessageDecoration(
-                          color:
-                              isOwnMessage ? MyTheme.accent : Colors.blueGrey,
+                          color: isOwnMessage
+                              ? Color(0xFFE6A800)
+                              : Color(0xFF2A251A),
                           borderTopLeft: 8,
                           borderTopRight: 8,
                           borderBottomRight: isOwnMessage ? 2 : 8,
@@ -171,7 +214,8 @@ class ChatPage extends StatelessWidget implements PageShape {
                   return SelectionArea(child: chat);
                 }),
               ],
-            ).paddingOnly(bottom: 8);
+            ).paddingOnly(bottom: 8)),
+            ]);
           },
         ),
       ),

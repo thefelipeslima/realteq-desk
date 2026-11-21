@@ -4371,6 +4371,29 @@ Future<void> realteqLogHistory(String id, String name, String mode) async {
   } catch (_) {}
 }
 
+void realteqNotifyConnected() {
+  try {
+    SystemSound.play(SystemSoundType.alert);
+  } catch (_) {}
+}
+
+Future<void> realteqEndHistory(String id, Duration d) async {
+  try {
+    final raw = bind.mainGetLocalOption(key: 'realteq-history');
+    if (raw.isEmpty) return;
+    final List list = jsonDecode(raw);
+    for (final e in list) {
+      if (e is Map && e['id'] == id && e['dur'] == null) {
+        e['dur'] = d.inSeconds;
+        break;
+      }
+    }
+    await bind.mainSetLocalOption(
+        key: 'realteq-history', value: jsonEncode(list));
+    realteqHistoryTick.value++;
+  } catch (_) {}
+}
+
 Future<void> realteqSaveName(String id, String name) async {
   final n = name.trim();
   if (n.isEmpty) return;
